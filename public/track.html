@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Complaint – MPLADS Monitor</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-brand">MPLADS Monitor <span class="gov-badge">GOV</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
+      <li><a href="track.html" class="active">Track Complaint</a></li>
+      <li><a href="report.html" class="btn-report">Report Issue</a></li>
+    </ul>
+  </nav>
+
+  <section class="section">
+    <div class="container" style="max-width:640px;">
+
+      <h2 class="section-title">Track Your Complaint</h2>
+      <p style="margin-bottom:24px; color:var(--text-light); font-size:0.95rem;">
+        Enter your Ticket ID below (e.g. <code>CMP-2024-000001</code>) to check investigation status.
+      </p>
+
+      <!-- Search box -->
+      <div class="card">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label for="ticket-input">Ticket ID</label>
+          <input type="text" id="ticket-input" placeholder="e.g. CMP-2024-000001" />
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="trackComplaint()">
+          Search Status
+        </button>
+      </div>
+
+      <!-- Error message -->
+      <div id="error-msg" class="alert alert-error" style="display:none; margin-top:16px;"></div>
+
+      <!-- Result card (hidden until result) -->
+      <div id="result-card" class="card" style="display:none; margin-top:16px;">
+        <h3 style="color:var(--primary); margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px;">
+          Complaint Record
+        </h3>
+        <table style="width:100%; border:none; box-shadow:none;">
+          <tr>
+            <td style="padding:8px 0; font-weight:600; width:40%; border:none; color:var(--text-light);">Ticket ID:</td>
+            <td style="padding:8px 0; border:none; font-weight:700; font-family:monospace;" id="res-ticketId">—</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Citizen Name:</td>
+            <td style="padding:8px 0; border:none;" id="res-name">—</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Category:</td>
+            <td style="padding:8px 0; border:none;" id="res-category">—</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Project ID:</td>
+            <td style="padding:8px 0; border:none;" id="res-project">—</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Description:</td>
+            <td style="padding:8px 0; border:none;" id="res-description">—</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Filing Date:</td>
+            <td style="padding:8px 0; border:none;" id="res-date">—</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Current Status:</td>
+            <td style="padding:8px 0; border:none;" id="res-status">—</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card" style="text-align:center; margin-top:16px;">
+        <p style="font-size:0.9rem; color:var(--text-light);">
+          Need to report a new problem?
+          <a href="report.html" style="font-weight:600;">File a new complaint →</a>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-bottom" style="max-width:1200px; margin:0 auto; color:rgba(255,255,255,0.65); font-size:0.85rem;">
+      © 2024 MPLADS Monitor | Web Technology Project
+    </div>
+  </footer>
+
+  <script src="js/track.js"></script>
+
+</body>
+</html>

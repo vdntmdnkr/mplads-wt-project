@@ -1,0 +1,103 @@
+// ============================================================
+// seed.js  –  Seed MongoDB with MPLADS sample project data
+// Run:  node seed.js
+// ============================================================
+
+const mongoose = require('mongoose');
+const Project  = require('./models/Project');
+const Complaint = require('./models/Complaint');
+require('dotenv').config();
+
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mplads';
+
+// 50 realistic MPLADS sample projects across various states
+const projects = [
+  { workId: 'MP620/2024-25/001', title: 'Construction of community hall in village Khanapur', category: 'Buildings', state: 'Maharashtra', district: 'Pune', constituency: 'Baramati', mpName: 'Supriya Sule', status: 'Completed', recommendedAmount: 1500000, sanctionedAmount: 1500000, completedAmount: 1500000 },
+  { workId: 'MP620/2024-25/002', title: 'Road construction from Sangvi to Wakad', category: 'Roads', state: 'Maharashtra', district: 'Pune', constituency: 'Baramati', mpName: 'Supriya Sule', status: 'Ongoing', recommendedAmount: 3000000, sanctionedAmount: 2800000, completedAmount: 1200000 },
+  { workId: 'MP620/2024-25/003', title: 'Installation of solar street lights in Hadapsar ward', category: 'Energy', state: 'Maharashtra', district: 'Pune', constituency: 'Baramati', mpName: 'Supriya Sule', status: 'Completed', recommendedAmount: 800000, sanctionedAmount: 800000, completedAmount: 800000 },
+  { workId: 'MP620/2024-25/004', title: 'Construction of toilet blocks in government school', category: 'Sanitation', state: 'Maharashtra', district: 'Nashik', constituency: 'Nashik', mpName: 'Hemant Godse', status: 'Completed', recommendedAmount: 600000, sanctionedAmount: 600000, completedAmount: 600000 },
+  { workId: 'MP620/2024-25/005', title: 'Renovation of primary health centre Ozar', category: 'Health', state: 'Maharashtra', district: 'Nashik', constituency: 'Nashik', mpName: 'Hemant Godse', status: 'Work partially Completed', recommendedAmount: 2500000, sanctionedAmount: 2500000, completedAmount: 1000000 },
+  { workId: 'MP620/2024-25/006', title: 'Construction of check dam on Mula river', category: 'Water', state: 'Maharashtra', district: 'Ahmednagar', constituency: 'Ahmednagar', mpName: 'Nilesh Lanke', status: 'Sanctioned', recommendedAmount: 5000000, sanctionedAmount: 4800000, completedAmount: 0 },
+  { workId: 'MP620/2024-25/007', title: 'Repair of Zilla Parishad school building', category: 'Education', state: 'Karnataka', district: 'Dharwad', constituency: 'Dharwad', mpName: 'Pralhad Joshi', status: 'Completed', recommendedAmount: 1200000, sanctionedAmount: 1200000, completedAmount: 1200000 },
+  { workId: 'MP620/2024-25/008', title: 'Drinking water pipeline to tribal hamlet Gavde', category: 'Water', state: 'Karnataka', district: 'Dharwad', constituency: 'Dharwad', mpName: 'Pralhad Joshi', status: 'Ongoing', recommendedAmount: 3500000, sanctionedAmount: 3500000, completedAmount: 2000000 },
+  { workId: 'MP620/2024-25/009', title: 'Construction of anganwadi centre Hubli zone 4', category: 'Buildings', state: 'Karnataka', district: 'Hubli', constituency: 'Hubli-Dharwad', mpName: 'Pralhad Joshi', status: 'Completed', recommendedAmount: 900000, sanctionedAmount: 900000, completedAmount: 900000 },
+  { workId: 'MP620/2024-25/010', title: 'Street repair and drainage work Mysore road', category: 'Roads', state: 'Karnataka', district: 'Mysore', constituency: 'Mysore', mpName: 'V. Srinivas Prasad', status: 'Completed', recommendedAmount: 2000000, sanctionedAmount: 2000000, completedAmount: 2000000 },
+  { workId: 'MP620/2024-25/011', title: 'Flood relief and road restoration Patna district', category: 'Calamity', state: 'Bihar', district: 'Patna', constituency: 'Patna Sahib', mpName: 'Ravi Shankar Prasad', status: 'Completed', recommendedAmount: 7000000, sanctionedAmount: 7000000, completedAmount: 7000000 },
+  { workId: 'MP620/2024-25/012', title: 'Construction of model library Muzaffarpur', category: 'Education', state: 'Bihar', district: 'Muzaffarpur', constituency: 'Muzaffarpur', mpName: 'Ajay Nishad', status: 'Ongoing', recommendedAmount: 1800000, sanctionedAmount: 1800000, completedAmount: 600000 },
+  { workId: 'MP620/2024-25/013', title: 'Solar pump installation in farmers fields Bhojpur', category: 'Agriculture', state: 'Bihar', district: 'Bhojpur', constituency: 'Arrah', mpName: 'RK Singh', status: 'Completed', recommendedAmount: 1500000, sanctionedAmount: 1500000, completedAmount: 1500000 },
+  { workId: 'MP620/2024-25/014', title: 'Renovation of cremation ground Sasaram', category: 'Buildings', state: 'Bihar', district: 'Rohtas', constituency: 'Sasaram', mpName: 'Chhedilal Gupta', status: 'Sanctioned', recommendedAmount: 1000000, sanctionedAmount: 1000000, completedAmount: 0 },
+  { workId: 'MP620/2024-25/015', title: 'Road widening project NH-24 Lucknow bypass', category: 'Roads', state: 'Uttar Pradesh', district: 'Lucknow', constituency: 'Lucknow', mpName: 'Rajnath Singh', status: 'Completed', recommendedAmount: 10000000, sanctionedAmount: 10000000, completedAmount: 10000000 },
+  { workId: 'MP620/2024-25/016', title: 'Construction of veterinary hospital Kanpur rural', category: 'Health', state: 'Uttar Pradesh', district: 'Kanpur', constituency: 'Kanpur', mpName: 'Satyadev Pachauri', status: 'Ongoing', recommendedAmount: 3000000, sanctionedAmount: 2800000, completedAmount: 900000 },
+  { workId: 'MP620/2024-25/017', title: 'Skill development centre construction Varanasi', category: 'Education', state: 'Uttar Pradesh', district: 'Varanasi', constituency: 'Varanasi', mpName: 'Narendra Modi', status: 'Completed', recommendedAmount: 5000000, sanctionedAmount: 5000000, completedAmount: 5000000 },
+  { workId: 'MP620/2024-25/018', title: 'Rural road paving under PMGSY Agra district', category: 'Roads', state: 'Uttar Pradesh', district: 'Agra', constituency: 'Agra', mpName: 'SP Singh Baghel', status: 'Work partially Completed', recommendedAmount: 4500000, sanctionedAmount: 4500000, completedAmount: 2000000 },
+  { workId: 'MP620/2024-25/019', title: 'Bore well drilling in drought area Gulbarga', category: 'Water', state: 'Karnataka', district: 'Gulbarga', constituency: 'Gulbarga', mpName: 'Umesh Jadhav', status: 'Completed', recommendedAmount: 1200000, sanctionedAmount: 1200000, completedAmount: 1200000 },
+  { workId: 'MP620/2024-25/020', title: 'Construction of sports ground fencing Raichur', category: 'Buildings', state: 'Karnataka', district: 'Raichur', constituency: 'Raichur', mpName: 'Raja Amareshwara Naik', status: 'Recommended', recommendedAmount: 700000, sanctionedAmount: 0, completedAmount: 0 },
+  { workId: 'MP620/2024-25/021', title: 'Bridge construction over Betwa river Jhansi', category: 'Roads', state: 'Uttar Pradesh', district: 'Jhansi', constituency: 'Jhansi', mpName: 'Anurag Sharma', status: 'Ongoing', recommendedAmount: 15000000, sanctionedAmount: 14000000, completedAmount: 5000000 },
+  { workId: 'MP620/2024-25/022', title: 'Electrification of unelectrified villages Sitapur', category: 'Energy', state: 'Uttar Pradesh', district: 'Sitapur', constituency: 'Sitapur', mpName: 'Rajesh Verma', status: 'Completed', recommendedAmount: 2500000, sanctionedAmount: 2500000, completedAmount: 2500000 },
+  { workId: 'MP620/2024-25/023', title: 'Renovation of primary school building Puri', category: 'Education', state: 'Odisha', district: 'Puri', constituency: 'Puri', mpName: 'Pinaki Misra', status: 'Completed', recommendedAmount: 1400000, sanctionedAmount: 1400000, completedAmount: 1400000 },
+  { workId: 'MP620/2024-25/024', title: 'Cyclone shelter construction coastal Kendrapara', category: 'Calamity', state: 'Odisha', district: 'Kendrapara', constituency: 'Kendrapara', mpName: 'Baijayant Panda', status: 'Ongoing', recommendedAmount: 8000000, sanctionedAmount: 8000000, completedAmount: 3500000 },
+  { workId: 'MP620/2024-25/025', title: 'Cold storage construction for farmers Bhubaneswar', category: 'Agriculture', state: 'Odisha', district: 'Khordha', constituency: 'Bhubaneswar', mpName: 'Aparajita Sarangi', status: 'Completed', recommendedAmount: 3200000, sanctionedAmount: 3200000, completedAmount: 3200000 },
+  { workId: 'MP620/2024-25/026', title: 'Rehabilitation centre for differently abled Coimbatore', category: 'Health', state: 'Tamil Nadu', district: 'Coimbatore', constituency: 'Coimbatore', mpName: 'PR Natarajan', status: 'Completed', recommendedAmount: 2800000, sanctionedAmount: 2800000, completedAmount: 2800000 },
+  { workId: 'MP620/2024-25/027', title: 'Canal desilting work Thanjavur delta region', category: 'Water', state: 'Tamil Nadu', district: 'Thanjavur', constituency: 'Thanjavur', mpName: 'SS Palanimanickam', status: 'Work partially Completed', recommendedAmount: 6000000, sanctionedAmount: 6000000, completedAmount: 3000000 },
+  { workId: 'MP620/2024-25/028', title: 'Construction of fish market shed Rameswaram', category: 'Buildings', state: 'Tamil Nadu', district: 'Ramanathapuram', constituency: 'Rameswaram', mpName: 'TRB Rajaa', status: 'Completed', recommendedAmount: 1600000, sanctionedAmount: 1600000, completedAmount: 1600000 },
+  { workId: 'MP620/2024-25/029', title: 'Road widening project Chennai–Tambaram corridor', category: 'Roads', state: 'Tamil Nadu', district: 'Kanchipuram', constituency: 'Tambaram', mpName: 'Durai Murugan', status: 'Ongoing', recommendedAmount: 12000000, sanctionedAmount: 11000000, completedAmount: 4000000 },
+  { workId: 'MP620/2024-25/030', title: 'Ambulance purchase for PHC Medak district', category: 'Health', state: 'Telangana', district: 'Medak', constituency: 'Medak', mpName: 'Kotha Prabhakar Reddy', status: 'Completed', recommendedAmount: 1800000, sanctionedAmount: 1800000, completedAmount: 1800000 },
+  { workId: 'MP620/2024-25/031', title: 'Water supply scheme Nizamabad rural habitations', category: 'Water', state: 'Telangana', district: 'Nizamabad', constituency: 'Nizamabad', mpName: 'Dharmapuri Arvind', status: 'Sanctioned', recommendedAmount: 4000000, sanctionedAmount: 4000000, completedAmount: 0 },
+  { workId: 'MP620/2024-25/032', title: 'Ground floor extension govt school Warangal', category: 'Education', state: 'Telangana', district: 'Warangal', constituency: 'Warangal', mpName: 'Pasunuri Dayakar', status: 'Completed', recommendedAmount: 2200000, sanctionedAmount: 2200000, completedAmount: 2200000 },
+  { workId: 'MP620/2024-25/033', title: 'Rural connectivity road Almora mountain villages', category: 'Roads', state: 'Uttarakhand', district: 'Almora', constituency: 'Almora', mpName: 'Ajay Tamta', status: 'Completed', recommendedAmount: 3800000, sanctionedAmount: 3800000, completedAmount: 3800000 },
+  { workId: 'MP620/2024-25/034', title: 'AYUSH dispensary building Pauri Garhwal', category: 'Health', state: 'Uttarakhand', district: 'Pauri Garhwal', constituency: 'Garhwal', mpName: 'Tirath Singh Rawat', status: 'Work partially Completed', recommendedAmount: 2000000, sanctionedAmount: 2000000, completedAmount: 800000 },
+  { workId: 'MP620/2024-25/035', title: 'Construction of park and benches Dehradun', category: 'Buildings', state: 'Uttarakhand', district: 'Dehradun', constituency: 'Dehradun', mpName: 'Mala Rajya Laxmi Shah', status: 'Completed', recommendedAmount: 1200000, sanctionedAmount: 1200000, completedAmount: 1200000 },
+  { workId: 'MP620/2024-25/036', title: 'Flood embankment repair Jorhat Assam', category: 'Calamity', state: 'Assam', district: 'Jorhat', constituency: 'Jorhat', mpName: 'Topon Kumar Gogoi', status: 'Completed', recommendedAmount: 9000000, sanctionedAmount: 9000000, completedAmount: 9000000 },
+  { workId: 'MP620/2024-25/037', title: 'Multipurpose community centre Kamrup metro', category: 'Buildings', state: 'Assam', district: 'Kamrup', constituency: 'Gauhati', mpName: 'Queen Ojah', status: 'Ongoing', recommendedAmount: 3500000, sanctionedAmount: 3500000, completedAmount: 1800000 },
+  { workId: 'MP620/2024-25/038', title: 'Solar micro-grid installation Manipur hill districts', category: 'Energy', state: 'Manipur', district: 'Senapati', constituency: 'Inner Manipur', mpName: 'Alfred Arthur', status: 'Completed', recommendedAmount: 4500000, sanctionedAmount: 4500000, completedAmount: 4500000 },
+  { workId: 'MP620/2024-25/039', title: 'Foot bridge construction remote tribal area Tripura', category: 'Roads', state: 'Tripura', district: 'Dhalai', constituency: 'Tripura East', mpName: 'Rebati Tripura', status: 'Completed', recommendedAmount: 2800000, sanctionedAmount: 2800000, completedAmount: 2800000 },
+  { workId: 'MP620/2024-25/040', title: 'Construction of boundary wall school campus Shillong', category: 'Education', state: 'Meghalaya', district: 'East Khasi Hills', constituency: 'Shillong', mpName: 'Vincent H Pala', status: 'Completed', recommendedAmount: 1500000, sanctionedAmount: 1500000, completedAmount: 1500000 },
+  { workId: 'MP620/2024-25/041', title: 'Construction of cold chain storage for vaccines Srinagar', category: 'Health', state: 'Jammu & Kashmir', district: 'Srinagar', constituency: 'Srinagar', mpName: 'Farooq Abdullah', status: 'Completed', recommendedAmount: 3000000, sanctionedAmount: 3000000, completedAmount: 3000000 },
+  { workId: 'MP620/2024-25/042', title: 'Road construction Leh–Nubra village connectivity', category: 'Roads', state: 'Ladakh', district: 'Leh', constituency: 'Ladakh', mpName: 'Jamyang Tsering Namgyal', status: 'Ongoing', recommendedAmount: 20000000, sanctionedAmount: 18000000, completedAmount: 7000000 },
+  { workId: 'MP620/2024-25/043', title: 'Installation of automated weather station Shimla', category: 'Agriculture', state: 'Himachal Pradesh', district: 'Shimla', constituency: 'Shimla', mpName: 'Suresh Kashyap', status: 'Completed', recommendedAmount: 2500000, sanctionedAmount: 2500000, completedAmount: 2500000 },
+  { workId: 'MP620/2024-25/044', title: 'Eco-tourism facility Manali visitor area', category: 'Buildings', state: 'Himachal Pradesh', district: 'Kullu', constituency: 'Mandi', mpName: 'Kangana Ranaut', status: 'Sanctioned', recommendedAmount: 5000000, sanctionedAmount: 5000000, completedAmount: 0 },
+  { workId: 'MP620/2024-25/045', title: 'Rural IT centre for youth Chandigarh border area', category: 'Education', state: 'Punjab', district: 'Mohali', constituency: 'Anandpur Sahib', mpName: 'Manish Tewari', status: 'Completed', recommendedAmount: 1800000, sanctionedAmount: 1800000, completedAmount: 1800000 },
+  { workId: 'MP620/2024-25/046', title: 'Flood-proof embankment and drainage Ludhiana', category: 'Calamity', state: 'Punjab', district: 'Ludhiana', constituency: 'Ludhiana', mpName: 'Ravneet Singh Bittu', status: 'Completed', recommendedAmount: 7500000, sanctionedAmount: 7500000, completedAmount: 7500000 },
+  { workId: 'MP620/2024-25/047', title: 'Cattle shed and veterinary block Hissar rural', category: 'Agriculture', state: 'Haryana', district: 'Hissar', constituency: 'Hissar', mpName: 'Dushyant Chautala', status: 'Ongoing', recommendedAmount: 2000000, sanctionedAmount: 2000000, completedAmount: 600000 },
+  { workId: 'MP620/2024-25/048', title: 'Ghats renovation and beautification Haridwar', category: 'Buildings', state: 'Uttarakhand', district: 'Haridwar', constituency: 'Haridwar', mpName: 'Trivendram Rawat', status: 'Work partially Completed', recommendedAmount: 3500000, sanctionedAmount: 3500000, completedAmount: 1500000 },
+  { workId: 'MP620/2024-25/049', title: 'Digital literacy centre women self help groups Ajmer', category: 'Education', state: 'Rajasthan', district: 'Ajmer', constituency: 'Ajmer', mpName: 'Bhagirath Choudhary', status: 'Completed', recommendedAmount: 1200000, sanctionedAmount: 1200000, completedAmount: 1200000 },
+  { workId: 'MP620/2024-25/050', title: 'Construction of grain storage godown Bikaner', category: 'Agriculture', state: 'Rajasthan', district: 'Bikaner', constituency: 'Bikaner', mpName: 'Arjun Ram Meghwal', status: 'Completed', recommendedAmount: 4000000, sanctionedAmount: 4000000, completedAmount: 4000000 }
+];
+
+// Sample citizen complaints
+const complaints = [
+  { ticketId: 'CMP-2024-000001', name: 'Ramesh Kumar', phone: '9876543210', projectId: 'MP620/2024-25/002', category: 'Poor Quality', description: 'Road construction is of very poor quality. Potholes formed within 2 weeks of completion.', status: 'Under Review' },
+  { ticketId: 'CMP-2024-000002', name: 'Sunita Devi', phone: '9123456789', projectId: 'MP620/2024-25/005', category: 'Delay', description: 'PHC renovation work has been stalled for 3 months. Workers not coming to site.', status: 'Submitted' },
+  { ticketId: 'CMP-2024-000003', name: 'Abdul Hamid', phone: '9988776655', projectId: 'MP620/2024-25/016', category: 'Corruption', description: 'Contractor is using substandard cement. Photos attached.', status: 'Submitted' },
+  { ticketId: 'CMP-2024-000004', name: 'Priya Sharma', phone: '9765432100', projectId: 'MP620/2024-25/021', category: 'Missing Funds', description: 'Village residents allege that funds were released but no work done in Jhansi bridge project.', status: 'Resolved' },
+  { ticketId: 'CMP-2024-000005', name: 'Suresh Nair', phone: '9654321098', projectId: 'MP620/2024-25/027', category: 'Delay', description: 'Canal desilting work incomplete before monsoon. Fields are flooding.', status: 'Under Review' }
+];
+
+async function seed() {
+  try {
+    await mongoose.connect(MONGO_URI);
+    console.log('Connected to MongoDB...');
+
+    // Clear existing data
+    await Project.deleteMany({});
+    await Complaint.deleteMany({});
+    console.log('Cleared existing data.');
+
+    // Insert projects
+    await Project.insertMany(projects);
+    console.log(`[OK] Inserted ${projects.length} projects.`);
+
+    // Insert complaints
+    await Complaint.insertMany(complaints);
+    console.log(`[OK] Inserted ${complaints.length} complaints.`);
+
+    console.log('\n[OK] Database seeded successfully!');
+    console.log('Now run:  node server.js');
+    process.exit(0);
+  } catch (err) {
+    console.error('Seeding error:', err.message);
+    process.exit(1);
+  }
+}
+
+seed();

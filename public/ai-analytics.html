@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Anomaly & Fraud Monitor – MPLADS</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-brand">MPLADS Monitor <span class="gov-badge">GOV</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="ai-analytics.html" class="active">AI Risk Monitor</a></li>
+      <li><a href="track.html">Track Complaint</a></li>
+      <li><a href="report.html" class="btn-report">Report Issue</a></li>
+    </ul>
+  </nav>
+
+  <section class="section">
+    <div class="container">
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
+        <div>
+          <h2 class="section-title" style="margin-bottom:6px;">AI Anomaly & Risk Detection Engine</h2>
+          <p style="color:var(--text-light); font-size:0.95rem;">
+            Powered by a Python statistical & text-similarity analysis layer to flag duplicate works, stalled executions, and cost deviations.
+          </p>
+        </div>
+        <button id="btn-run-ai" class="btn btn-primary" onclick="triggerAiAnalysis()">
+          Run Python AI Inspection
+        </button>
+      </div>
+
+      <!-- Live status notification -->
+      <div id="ai-status-msg" class="alert alert-info" style="display:none;"></div>
+
+      <!-- KPI Grid for AI Detection -->
+      <div class="kpi-grid">
+        <div class="kpi-card red">
+          <div class="kpi-number" id="stat-high-risk" style="color:var(--danger);">—</div>
+          <div class="kpi-label">High Risk Alerts</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-number" id="stat-medium-risk" style="color:var(--warning);">—</div>
+          <div class="kpi-label">Medium Risk Alerts</div>
+        </div>
+        <div class="kpi-card info">
+          <div class="kpi-number" id="stat-total-anomalies">—</div>
+          <div class="kpi-label">Total Issues Detected</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-number" id="stat-avg-score">—</div>
+          <div class="kpi-label">Avg Anomaly Score</div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div style="flex:2; min-width:180px;">
+          <label>Search Anomaly / Work</label>
+          <input type="text" id="ai-search" placeholder="Search by title, work ID, or district…" />
+        </div>
+        <div style="flex:1; min-width:150px;">
+          <label>Risk Level</label>
+          <select id="filter-risk">
+            <option value="">All Risk Levels</option>
+            <option value="HIGH">High Risk</option>
+            <option value="MEDIUM">Medium Risk</option>
+            <option value="LOW">Low Risk</option>
+          </select>
+        </div>
+        <div style="flex:1; min-width:180px;">
+          <label>Anomaly Type</label>
+          <select id="filter-type">
+            <option value="">All Types</option>
+            <option value="Duplicate">Potential Duplicate Work</option>
+            <option value="Stalled">Stalled / Zero Utilization</option>
+            <option value="Partial">Partial Completion Inefficiency</option>
+            <option value="Curtailment">Sanction Curtailment</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:8px; align-items:flex-end;">
+          <button class="btn btn-primary" onclick="loadAnomalies()">Filter</button>
+          <button class="btn" style="background:var(--border);" onclick="clearAiFilters()">Clear</button>
+        </div>
+      </div>
+
+      <p id="ai-result-count" style="font-size:0.88rem; color:var(--text-light); margin-bottom:12px;"></p>
+
+      <!-- Anomalies Table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Work ID</th>
+              <th>Project Title</th>
+              <th>State / District</th>
+              <th>Anomaly Classification</th>
+              <th>Risk Level</th>
+              <th>Risk Score</th>
+              <th>Confidence</th>
+              <th>AI Action / Explanation</th>
+            </tr>
+          </thead>
+          <tbody id="anomalies-tbody">
+            <tr><td colspan="8" class="loading">Running AI anomaly scanner…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Project Detail Modal ───────────────────────────── -->
+  <div id="ai-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; overflow-y:auto;">
+    <div style="background:white; max-width:620px; margin:60px auto; border-radius:10px; padding:32px; position:relative;">
+      <button onclick="closeAiModal()"
+        style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-light);">&times;</button>
+      <div id="ai-modal-content">Loading…</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom" style="max-width:1200px; margin:0 auto; color:rgba(255,255,255,0.65); font-size:0.85rem;">
+      © 2024 MPLADS Monitor | Web Technology Full Stack Project with Python Analytics Layer
+    </div>
+  </footer>
+
+  <script src="js/ai-analytics.js"></script>
+
+</body>
+</html>

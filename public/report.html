@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Issue – MPLADS Monitor</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-brand">MPLADS Monitor <span class="gov-badge">GOV</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
+      <li><a href="track.html">Track Complaint</a></li>
+      <li><a href="report.html" class="btn-report active">Report Issue</a></li>
+    </ul>
+  </nav>
+
+  <section class="section">
+    <div class="container" style="max-width:720px;">
+
+      <h2 class="section-title">Report a Project Issue</h2>
+      <p style="margin-bottom:24px; color:var(--text-light); font-size:0.95rem;">
+        As a citizen, you can report corruption, delays, poor quality, or missing funds 
+        related to any MPLADS project. Your complaint will be recorded in our database.
+      </p>
+
+      <!-- Success message (hidden by default) -->
+      <div id="success-msg" class="alert alert-success" style="display:none;"></div>
+      <div id="error-msg"   class="alert alert-error"   style="display:none;"></div>
+
+      <!-- Complaint Form -->
+      <div class="card">
+        <form id="complaint-form">
+
+          <h3 style="margin-bottom:20px; color:var(--primary);">Citizen Information</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Full Name *</label>
+              <input type="text" id="name" placeholder="e.g. Ramesh Kumar" required />
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" placeholder="10-digit mobile number" />
+            </div>
+          </div>
+
+          <h3 style="margin-bottom:20px; margin-top:8px; color:var(--primary);">Issue Details</h3>
+          <div class="form-group">
+            <label for="projectId">Project ID (optional)</label>
+            <input type="text" id="projectId" placeholder="e.g. MP620/2024-25/002" />
+          </div>
+
+          <div class="form-group">
+            <label for="category">Issue Category *</label>
+            <select id="category" required>
+              <option value="">Select a category</option>
+              <option value="Corruption">Corruption / Fund Misuse</option>
+              <option value="Delay">Unreasonable Delay</option>
+              <option value="Poor Quality">Poor Quality of Construction</option>
+              <option value="Missing Funds">Funds Released but No Work</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Describe the Problem *</label>
+            <textarea id="description" rows="5"
+              placeholder="Please provide details about the location, observations, and why this requires inspection."
+              required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:14px;">
+            Submit Complaint
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Track complaint link -->
+      <div class="card" style="text-align:center; margin-top:16px;">
+        <p style="font-size:0.9rem; color:var(--text-light);">
+          Already filed a complaint?
+          <a href="track.html" style="font-weight:600;">Track its status using your Ticket ID →</a>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-bottom" style="max-width:1200px; margin:0 auto; color:rgba(255,255,255,0.65); font-size:0.85rem;">
+      © 2024 MPLADS Monitor | Web Technology Project
+    </div>
+  </footer>
+
+  <script src="js/report.js"></script>
+
+</body>
+</html>
