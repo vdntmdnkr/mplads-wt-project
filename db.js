@@ -21,7 +21,7 @@ try {
   console.warn('[DB] Native sqlite3 library unavailable, using local JSON store fallback:', err.message);
 }
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mplads';
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/mplads';
 const SQLITE_FILE = path.join(__dirname, 'data', 'mplads_local.db');
 const SEED_FILE = path.join(__dirname, 'data', 'initialData.json');
 
@@ -216,7 +216,7 @@ async function connectDB() {
 
   try {
     await mongoose.connect(MONGO_URI, {
-      serverSelectionTimeoutMS: 2000
+      serverSelectionTimeoutMS: 8000
     });
     isUsingMongo = true;
     console.log('[DB] MongoDB connected successfully at', MONGO_URI);
