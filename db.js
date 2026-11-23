@@ -18,7 +18,9 @@ let sqlite3 = null;
 try {
   sqlite3 = require('sqlite3').verbose();
 } catch (err) {
-  console.warn('[DB] Native sqlite3 library unavailable, using local JSON store fallback:', err.message);
+  if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
+    console.warn('[DB] Native sqlite3 library unavailable, using local JSON store fallback:', err.message);
+  }
 }
 
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/mplads';
@@ -236,10 +238,11 @@ async function connectDB() {
     }
   } catch (err) {
     isUsingMongo = false;
+    console.warn('[DB] MongoDB connection failed:', err.message);
     if (isUsingSqlite) {
-      console.log('[DB] MongoDB offline. Active Database: Local SQLite (data/mplads_local.db)');
+      console.log('[DB] Fallback active: Local SQLite (data/mplads_local.db)');
     } else {
-      console.log('[DB] MongoDB offline. Active Database: Built-in JSON Database Adapter');
+      console.log('[DB] Fallback active: Built-in JSON Database Adapter');
     }
   }
 }
