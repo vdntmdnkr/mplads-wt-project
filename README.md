@@ -1,4 +1,4 @@
-# 🏛️ MPLADS Public Monitor & Accountability System
+#  MPLADS Public Monitor & Accountability System
 ### Web Technology Full Stack Academic Project
 
 A complete, full-stack web application designed according to the university Web Technology syllabus:
@@ -9,7 +9,7 @@ A complete, full-stack web application designed according to the university Web 
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 mplads/
@@ -50,7 +50,7 @@ mplads/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### 1. Install Dependencies
 ```bash
@@ -68,13 +68,13 @@ Visit **`http://localhost:3000`** in your browser.
 
 ---
 
-## 💡 Database Operation
+##  Database Operation
 
 - **MongoDB (Default if available)**: If MongoDB is running locally or a MongoDB Atlas connection string is provided in `.env`, the application connects via Mongoose.
 - **SQLite (Offline Fallback)**: If MongoDB is not running, the application automatically switches to the built-in local SQLite database (`data/mplads_local.db`). All searches, filters, and complaint submissions work immediately with zero configuration needed.
 
 ---
 
-## 🎯 Viva & Defense Preparation
+##  Viva & Defense Preparation
 
 For a complete walkthrough of potential viva questions, architecture explanations, and live code modification cheatsheets, see **[VIVA_GUIDE.md](VIVA_GUIDE.md)**.

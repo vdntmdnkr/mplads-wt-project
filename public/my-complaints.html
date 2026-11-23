@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Complaints – MPLADS Monitor</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .my-complaints-card {
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid var(--border, #dce1e7);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: transform 0.2s;
+    }
+    .my-complaints-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-brand">MPLADS Monitor <span class="gov-badge">GOV</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="my-complaints.html" class="active">My Complaints</a></li>
+      <li><a href="track.html">Track Complaint</a></li>
+      <li><a href="report.html" class="btn-report">Report Issue</a></li>
+    </ul>
+  </nav>
+
+  <section class="section">
+    <div class="container" style="max-width:960px;">
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:24px;">
+        <div>
+          <h2 class="section-title" style="margin-bottom:6px;">My Submitted Grievances</h2>
+          <p style="color:var(--text-light); font-size:0.92rem; margin:0;">
+            Review and track all issues you have submitted anonymously. Your personal identity remains hidden from authorities and public viewers.
+          </p>
+        </div>
+        <div>
+          <a href="report.html" class="btn btn-primary" style="font-weight:700;">
+            + File New Complaint
+          </a>
+        </div>
+      </div>
+
+      <!-- Anonymous Protection Alert -->
+      <div class="alert alert-info" style="margin-bottom:24px; font-size:0.88rem;">
+        <strong>Whistleblower Anonymity Active:</strong> For your security, your complaints are displayed only to your private account. District authorities and public portals only see you as <em>"Anonymous Citizen"</em>.
+      </div>
+
+      <!-- Status notice if not logged in -->
+      <div id="login-notice" class="alert alert-warning" style="display:none; margin-bottom:24px;">
+        <strong>Sign In Required:</strong> Please <a href="login.html?redirect=my-complaints.html" style="text-decoration:underline; font-weight:700;">log in to your citizen account</a> to view your past complaints.
+      </div>
+
+      <!-- List of user's complaints -->
+      <div id="complaints-list">
+        <p style="text-align:center; padding:30px; color:#64748b;">Loading your complaints...</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-bottom">
+      <p>&copy; 2024 MPLADS Monitor | Citizen Privacy &amp; Grievance Redressal</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMyComplaints();
+    });
+
+    async function loadMyComplaints() {
+      const user = getCurrentUser();
+      const listContainer = document.getElementById('complaints-list');
+      const loginNotice = document.getElementById('login-notice');
+
+      if (!user) {
+        loginNotice.style.display = 'block';
+        listContainer.innerHTML = '';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/complaints/my?email=' + encodeURIComponent(user.email || ''));
+        if (!res.ok) throw new Error('Could not retrieve complaints');
+        const list = await res.json();
+
+        if (list.length === 0) {
+          listContainer.innerHTML = `
+            <div class="card" style="text-align:center; padding:48px 20px;">
+              <h3 style="color:#0f172a; margin-bottom:8px;">No Complaints Filed Yet</h3>
+              <p style="color:#64748b; font-size:0.92rem; margin-bottom:20px;">
+                You haven't submitted any complaints under this account yet.
+              </p>
+              <a href="report.html" class="btn btn-primary">Report an Issue Now</a>
+            </div>
+          `;
+          return;
+        }
+
+        listContainer.innerHTML = list.map(c => {
+          let statusBg = '#fef3c7';
+          let statusColor = '#b45309';
+
+          if (c.status === 'Resolved') {
+            statusBg = '#dcfce7'; statusColor = '#15803d';
+          } else if (c.status === 'Rejected') {
+            statusBg = '#fee2e2'; statusColor = '#b91c1c';
+          } else if (c.status === 'Under Review' || c.status === 'Under Investigation') {
+            statusBg = '#e0f2fe'; statusColor = '#0369a1';
+          }
+
+          const dateStr = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-IN', {
+            day: 'numeric', month: 'short', year: 'numeric'
+          }) : 'Recently';
+
+          return `
+            <div class="my-complaints-card">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                <div>
+                  <span style="font-family:monospace; font-weight:800; color:var(--primary); font-size:1.05rem;">
+                    ${escapeHtml(c.ticketId || '')}
+                  </span>
+                  <span style="background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:600; margin-left:8px;">
+                    ${escapeHtml(c.category || 'General')}
+                  </span>
+                </div>
+                <div>
+                  <span style="background:${statusBg}; color:${statusColor}; padding:3px 10px; border-radius:12px; font-size:0.78rem; font-weight:700;">
+                    ${escapeHtml(c.status || 'Submitted')}
+                  </span>
+                </div>
+              </div>
+
+              <p style="margin:0 0 14px 0; color:#334155; font-size:0.92rem; line-height:1.5;">
+                ${escapeHtml(c.description || 'No description.')}
+              </p>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.8rem; color:#64748b; border-top:1px solid #f1f5f9; padding-top:10px;">
+                <div>
+                  Filed on: <strong>${escapeHtml(dateStr)}</strong> 
+                  ${c.projectId ? `| Project ID: <code>${escapeHtml(c.projectId)}</code>` : ''}
+                </div>
+                <div>
+                  <a href="track.html" onclick="sessionStorage.setItem('last_ticket', '${escapeHtml(c.ticketId)}')" style="color:var(--primary); font-weight:700; text-decoration:underline;">
+                    Track Live Ticket Status
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        listContainer.innerHTML = `
+          <div class="alert alert-error">Error loading your complaints: ${escapeHtml(err.message)}</div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

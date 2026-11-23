@@ -14,6 +14,7 @@
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="map.html">GIS Map</a></li>
       <li><a href="projects.html" class="active">Projects</a></li>
       <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
       <li><a href="track.html">Track Complaint</a></li>
@@ -47,6 +48,20 @@
             <option value="Sanctioned">Sanctioned</option>
             <option value="Recommended">Recommended</option>
             <option value="partially">Partially Done</option>
+          </select>
+        </div>
+        <div style="flex:1; min-width:140px;">
+          <label>Category</label>
+          <select id="filter-category">
+            <option value="">All Categories</option>
+            <option value="Roads">Roads &amp; Bridges</option>
+            <option value="Buildings">Buildings &amp; Community Halls</option>
+            <option value="Health">Health &amp; Medical</option>
+            <option value="Education">Education &amp; Libraries</option>
+            <option value="Water">Drinking Water Supply</option>
+            <option value="Sanitation">Sanitation &amp; Drainage</option>
+            <option value="Energy">Energy &amp; Solar</option>
+            <option value="Infrastructure">Other Infrastructure</option>
           </select>
         </div>
         <div style="display:flex; gap:8px; align-items:flex-end;">
@@ -99,6 +114,7 @@
     </div>
   </footer>
 
+  <script src="js/auth.js"></script>
   <script src="js/projects.js"></script>
 
 </body>

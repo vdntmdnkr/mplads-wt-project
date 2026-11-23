@@ -1,10 +1,10 @@
 {
-  "totalProjectsAnalyzed": 50,
-  "totalAnomaliesDetected": 7,
-  "highRiskCount": 3,
+  "totalProjectsAnalyzed": 54,
+  "totalAnomaliesDetected": 8,
+  "highRiskCount": 4,
   "mediumRiskCount": 4,
   "lowRiskCount": 0,
-  "averageRiskScore": 68.9,
+  "averageRiskScore": 70.0,
   "anomalies": [
     {
       "anomalyId": "DELAY-MP620/2024-25/005",
@@ -103,6 +103,20 @@
       "riskScore": 62,
       "confidence": "85%",
       "explanation": "Work is partially completed with only 42.9% fund utilization. Prolonged incomplete state leads to cost escalations and public amenity deprivation."
+    },
+    {
+      "anomalyId": "STALL-MP620/PUNE/2024-04",
+      "workId": "MP620/PUNE/2024-04",
+      "title": "Solid Waste Management & Biogas Processing Facility, Baramati",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "mpName": "Supriya Sule",
+      "category": "Sanitation",
+      "anomalyType": "Stalled Execution / Zero Utilization",
+      "riskLevel": "HIGH",
+      "riskScore": 78,
+      "confidence": "92%",
+      "explanation": "Substantial sanction of \u20b93,800,000 has zero reported fund utilization. Possible administrative bottleneck, contractor non-mobilization, or delay in site handover."
     }
   ]
 }

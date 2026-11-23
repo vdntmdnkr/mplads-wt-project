@@ -39,11 +39,16 @@ async function loadProjects() {
   const tbody = document.getElementById('projects-tbody');
   tbody.innerHTML = '<tr><td colspan="10" class="loading">Loading projects…</td></tr>';
 
-  // Collect filter values from the form
-  const search   = document.getElementById('search').value.trim();
-  const state    = document.getElementById('filter-state').value;
-  const status   = document.getElementById('filter-status').value;
-  const category = document.getElementById('filter-category').value;
+  // Collect filter values from the form safely
+  const searchEl   = document.getElementById('search');
+  const stateEl    = document.getElementById('filter-state');
+  const statusEl   = document.getElementById('filter-status');
+  const categoryEl = document.getElementById('filter-category');
+
+  const search   = searchEl ? searchEl.value.trim() : '';
+  const state    = stateEl ? stateEl.value : '';
+  const status   = statusEl ? statusEl.value : '';
+  const category = categoryEl ? categoryEl.value : '';
 
   // Build query string
   const params = new URLSearchParams();
@@ -115,10 +120,10 @@ async function populateStateFilter() {
 
 // ── Clear all filters ─────────────────────────────────────────
 function clearFilters() {
-  document.getElementById('search').value          = '';
-  document.getElementById('filter-state').value    = '';
-  document.getElementById('filter-status').value   = '';
-  document.getElementById('filter-category').value = '';
+  if (document.getElementById('search'))          document.getElementById('search').value = '';
+  if (document.getElementById('filter-state'))    document.getElementById('filter-state').value = '';
+  if (document.getElementById('filter-status'))   document.getElementById('filter-status').value = '';
+  if (document.getElementById('filter-category')) document.getElementById('filter-category').value = '';
   loadProjects();
 }
 

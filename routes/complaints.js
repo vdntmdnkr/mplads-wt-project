@@ -7,51 +7,98 @@ const express = require('express');
 const router = express.Router();
 const { Complaint } = require('../db');
 
-// ── GET /api/complaints ───────────────────────────────────────
-// Get all citizen complaints (optionally filtered by status)
-router.get('/', async (req, res) => {
+// ── GET /api/complaints/my ────────────────────────────────────
+// Return complaints filed by the currently logged-in citizen
+router.get('/my', async (req, res) => {
   try {
-    const { status } = req.query;
-    const filter = {};
-    if (status) filter.status = status;
-
-    const complaints = await Complaint.find(filter).sort({ createdAt: -1 }).limit(100);
+    const email = req.query.email;
+    if (!email) {
+      return res.status(401).json({ error: 'Citizen authentication required' });
+    }
+    const complaints = await Complaint.find({ citizenEmail: email }).sort({ createdAt: -1 }).limit(100);
     res.json(complaints);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
+// ── GET /api/complaints ───────────────────────────────────────
+// Get all citizen complaints (Masks citizen identity for 100% anonymity)
+router.get('/', async (req, res) => {
+  try {
+    const { status, district } = req.query;
+    const filter = {};
+    if (status) filter.status = status;
+    if (district) filter.district = district;
+
+    const complaints = await Complaint.find(filter).sort({ createdAt: -1 }).limit(100);
+
+    // Enforce Whistleblower Anonymity: never disclose complainant name or contact to authority/public
+    const sanitized = complaints.map(c => {
+      const plain = c.toObject ? c.toObject() : { ...c };
+      plain.name = 'Anonymous Citizen';
+      plain.citizenName = 'Anonymous Citizen';
+      delete plain.phone;
+      delete plain.citizenEmail;
+      return plain;
+    });
+
+    res.json(sanitized);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── GET /api/complaints/:ticketId ─────────────────────────────
-// Track complaint status by ticket ID
+// Track complaint status by ticket ID (Anonymized)
 router.get('/:ticketId', async (req, res) => {
   try {
     const complaint = await Complaint.findOne({ ticketId: req.params.ticketId });
     if (!complaint) return res.status(404).json({ error: 'Complaint not found' });
-    res.json(complaint);
+
+    const plain = complaint.toObject ? complaint.toObject() : { ...complaint };
+    plain.name = 'Anonymous Citizen (Protected Identity)';
+    plain.citizenName = 'Anonymous Citizen (Protected Identity)';
+    delete plain.phone;
+    delete plain.citizenEmail;
+
+    res.json(plain);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 // ── POST /api/complaints ──────────────────────────────────────
-// Citizen submits a new complaint
+// Citizen submits a new anonymous complaint
 router.post('/', async (req, res) => {
   try {
+    const { category, description, projectId, district, citizenEmail } = req.body;
+
+    if (!category || !description) {
+      return res.status(400).json({ error: 'Please provide Category and Description.' });
+    }
+
     // Generate unique Ticket ID e.g. "CMP-2024-000006"
     const count = await Complaint.countDocuments();
     const currentYear = new Date().getFullYear();
     const ticketId = `CMP-${currentYear}-${String(count + 1).padStart(6, '0')}`;
 
+    // For safety and security, store identity as Anonymous Citizen
     const newComplaint = {
-      ...req.body,
       ticketId,
+      name: 'Anonymous Citizen',
+      phone: 'Protected',
+      projectId: projectId || '',
+      category,
+      description,
+      district: district || 'Pune',
+      citizenEmail: citizenEmail || '',
       status: 'Submitted'
     };
 
     const saved = await Complaint.create(newComplaint);
     res.status(201).json({
-      message: 'Complaint submitted successfully',
+      message: 'Complaint submitted anonymously',
       ticketId: saved.ticketId
     });
   } catch (err) {
@@ -65,6 +112,13 @@ router.post('/', async (req, res) => {
 router.put('/:ticketId/status', async (req, res) => {
   try {
     const { status } = req.body;
+    const validStatuses = ['Submitted', 'Under Review', 'Resolved', 'Rejected'];
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({ 
+        error: `Invalid status. Allowed values: ${validStatuses.join(', ')}` 
+      });
+    }
+
     const updated = await Complaint.findOneAndUpdate(
       { ticketId: req.params.ticketId },
       { status },

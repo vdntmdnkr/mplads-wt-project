@@ -24,6 +24,8 @@ const projectSchema = new mongoose.Schema({
   recommendedDate:   { type: Date },
   sanctionDate:      { type: Date },
   completionDate:    { type: Date },
+  latitude:          { type: Number },
+  longitude:         { type: Number },
   createdAt:         { type: Date, default: Date.now }
 });
 

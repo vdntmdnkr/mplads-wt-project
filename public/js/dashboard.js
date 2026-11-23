@@ -40,22 +40,25 @@ async function loadDashboard() {
     const data     = await response.json();
 
     // Update all KPI cards by setting their text content
-    document.getElementById('d-total').textContent     = data.totalProjects.toLocaleString();
-    document.getElementById('d-completed').textContent = data.completed.toLocaleString();
-    document.getElementById('d-ongoing').textContent   = data.ongoing.toLocaleString();
-    document.getElementById('d-sanctioned').textContent = data.sanctioned.toLocaleString();
-    document.getElementById('d-partial').textContent   = data.partial.toLocaleString();
-    document.getElementById('d-states').textContent    = data.totalStates.toLocaleString();
-    document.getElementById('d-mps').textContent       = data.totalMPs.toLocaleString();
-    document.getElementById('d-util').textContent      = data.utilizationRate + '%';
+    document.getElementById('d-total').textContent     = Number(data.totalProjects || 0).toLocaleString();
+    document.getElementById('d-completed').textContent = Number(data.completed || 0).toLocaleString();
+    document.getElementById('d-ongoing').textContent   = Number(data.ongoing || 0).toLocaleString();
+    document.getElementById('d-sanctioned').textContent = Number(data.sanctioned || 0).toLocaleString();
+    document.getElementById('d-partial').textContent   = Number(data.partial || 0).toLocaleString();
+    document.getElementById('d-states').textContent    = Number(data.totalStates || 0).toLocaleString();
+    document.getElementById('d-mps').textContent       = Number(data.totalMPs || 0).toLocaleString();
+    document.getElementById('d-util').textContent      = (data.utilizationRate || 0) + '%';
 
     // Money stats
-    document.getElementById('d-sanc-amt').textContent  = formatINR(data.totalSanctionedAmount);
-    document.getElementById('d-spent-amt').textContent = formatINR(data.totalCompletedAmount);
-    document.getElementById('d-util-pct').textContent  = data.utilizationRate + '%';
+    document.getElementById('d-sanc-amt').textContent  = formatINR(data.totalSanctionedAmount || 0);
+    document.getElementById('d-spent-amt').textContent = formatINR(data.totalCompletedAmount || 0);
+    document.getElementById('d-util-pct').textContent  = (data.utilizationRate || 0) + '%';
 
     // Update progress bar width
-    document.getElementById('d-progress').style.width = Math.min(data.utilizationRate, 100) + '%';
+    document.getElementById('d-progress').style.width = Math.min(data.utilizationRate || 0, 100) + '%';
+
+    // Update state table to reflect filter
+    await loadStateTable(state);
 
   } catch (err) {
     console.error('Dashboard summary error:', err);
@@ -64,33 +67,35 @@ async function loadDashboard() {
 }
 
 // ── Load state-wise breakdown table ──────────────────────────
-async function loadStateTable() {
+async function loadStateTable(filterState) {
   const tbody = document.getElementById('state-table-body');
 
   try {
-    const response = await fetch('/api/dashboard/by-state');
+    let url = '/api/dashboard/by-state';
+    if (filterState) url += '?state=' + encodeURIComponent(filterState);
+    const response = await fetch(url);
     const rows     = await response.json();
 
     if (rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--text-light);">No data available</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--text-light);">No data available for this state</td></tr>';
       return;
     }
 
     // Build table rows using DOM manipulation
     tbody.innerHTML = rows.map((row, index) => `
-      <tr>
+      <tr style="${filterState ? 'background:#f0fdf4;' : ''}">
         <td>${index + 1}</td>
         <td><strong>${row.state}</strong></td>
-        <td>${row.totalProjects.toLocaleString()}</td>
-        <td>${row.completed.toLocaleString()}</td>
-        <td>${formatINR(row.totalSanctioned)}</td>
-        <td>${formatINR(row.totalSpent)}</td>
+        <td>${Number(row.totalProjects || 0).toLocaleString()}</td>
+        <td>${Number(row.completed || 0).toLocaleString()}</td>
+        <td>${formatINR(row.totalSanctioned || 0)}</td>
+        <td>${formatINR(row.totalSpent || 0)}</td>
         <td>
           <div style="display:flex; align-items:center; gap:8px;">
             <div class="progress-bar" style="width:80px;">
-              <div class="progress-fill" style="width:${row.completionRate}%"></div>
+              <div class="progress-fill" style="width:${row.completionRate || 0}%"></div>
             </div>
-            <span style="font-size:0.8rem; font-weight:600;">${row.completionRate}%</span>
+            <span style="font-size:0.8rem; font-weight:600;">${row.completionRate || 0}%</span>
           </div>
         </td>
       </tr>

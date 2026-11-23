@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Report Issue – MPLADS Monitor</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script>
+    // Without login, no complaint filing: redirect directly to login
+    (function() {
+      var raw = localStorage.getItem('mplads_user');
+      if (!raw) {
+        window.location.replace('login.html?redirect=report.html');
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -14,6 +23,7 @@
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="map.html">GIS Map</a></li>
       <li><a href="projects.html">Projects</a></li>
       <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
       <li><a href="track.html">Track Complaint</a></li>
@@ -38,15 +48,12 @@
       <div class="card">
         <form id="complaint-form">
 
-          <h3 style="margin-bottom:20px; color:var(--primary);">Citizen Information</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="name">Full Name *</label>
-              <input type="text" id="name" placeholder="e.g. Ramesh Kumar" required />
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:14px 16px; margin-bottom:20px;">
+            <div style="font-weight:700; color:#166534; font-size:0.95rem; margin-bottom:4px;">
+              Protected Whistleblower Submission (100% Anonymous)
             </div>
-            <div class="form-group">
-              <label for="phone">Phone Number</label>
-              <input type="tel" id="phone" placeholder="10-digit mobile number" />
+            <div style="font-size:0.85rem; color:#15803d; line-height:1.4;">
+              For your safety, no personal name or phone number is displayed to district authorities or public observers. You can review your grievance status anytime privately in <strong>My Complaints</strong>.
             </div>
           </div>
 
@@ -75,8 +82,8 @@
               required></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary" style="width:100%; padding:14px;">
-            Submit Complaint
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:14px; font-weight:700;">
+            Submit Anonymous Complaint
           </button>
 
         </form>
@@ -99,6 +106,7 @@
     </div>
   </footer>
 
+  <script src="js/auth.js"></script>
   <script src="js/report.js"></script>
 
 </body>

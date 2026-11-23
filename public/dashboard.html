@@ -14,6 +14,7 @@
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="map.html">GIS Map</a></li>
       <li><a href="projects.html">Projects</a></li>
       <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
       <li><a href="track.html">Track Complaint</a></li>
@@ -30,7 +31,7 @@
       <div class="filter-bar">
         <div>
           <label>Filter by State</label>
-          <select id="filter-state">
+          <select id="filter-state" onchange="loadDashboard()">
             <option value="">All India</option>
           </select>
         </div>
@@ -125,6 +126,7 @@
     </div>
   </footer>
 
+  <script src="js/auth.js"></script>
   <script src="js/dashboard.js"></script>
 
 </body>

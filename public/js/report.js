@@ -1,5 +1,5 @@
 // ============================================================
-// report.js  –  Citizen Complaint Form JavaScript
+// report.js  –  Citizen Anonymous Complaint Form JavaScript
 // Sends a POST request to /api/complaints with form data
 // ============================================================
 
@@ -8,36 +8,47 @@ window.addEventListener('DOMContentLoaded', function () {
   const params = new URLSearchParams(window.location.search);
   const pid = params.get('projectId');
   if (pid) {
-    document.getElementById('projectId').value = pid;
+    const el = document.getElementById('projectId');
+    if (el) el.value = pid;
   }
 });
 
 // Handle form submission
 document.getElementById('complaint-form').addEventListener('submit', async function (e) {
-  e.preventDefault(); // stop browser's default form submit (page refresh)
+  e.preventDefault();
 
-  // Hide any previous messages
   document.getElementById('success-msg').style.display = 'none';
   document.getElementById('error-msg').style.display   = 'none';
 
-  // Collect form values
-  const name        = document.getElementById('name').value.trim();
-  const phone       = document.getElementById('phone').value.trim();
   const projectId   = document.getElementById('projectId').value.trim();
   const category    = document.getElementById('category').value;
   const description = document.getElementById('description').value.trim();
 
   // Basic validation
-  if (!name || !category || !description) {
-    showError('Please fill in all required fields (Name, Category, Description).');
+  if (!category || !description) {
+    showError('Please fill in all required fields (Category, Description).');
     return;
   }
 
-  // Build the data object to send
-  const payload = { name, phone, projectId, category, description };
+  // Complainant identity is strictly masked as Anonymous Citizen
+  const payload = {
+    name: 'Anonymous Citizen',
+    phone: 'Protected',
+    projectId,
+    category,
+    description,
+    district: 'Pune'
+  };
 
   try {
-    // POST to our Express API
+    const raw = localStorage.getItem('mplads_user');
+    if (raw) {
+      const user = JSON.parse(raw);
+      if (user.email) payload.citizenEmail = user.email;
+    }
+  } catch (e) {}
+
+  try {
     const response = await fetch('/api/complaints', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -51,14 +62,16 @@ document.getElementById('complaint-form').addEventListener('submit', async funct
       return;
     }
 
-    // Show success with ticket ID
+    // Show success with ticket ID and direct links to My Complaints and Track Ticket
     showSuccess(
-      `Complaint submitted successfully! <br>
-       Your Ticket ID: <strong style="font-size:1.1rem;">${result.ticketId}</strong><br>
-       <small>Save this ID to track your complaint at <a href="track.html">track.html</a></small>`
+      `Grievance registered anonymously!<br>
+       Your Ticket ID: <strong style="font-size:1.15rem; font-family:monospace;">${result.ticketId}</strong><br>
+       <div style="margin-top:10px;">
+         <a href="my-complaints.html" class="btn btn-sm btn-primary" style="margin-right:8px; display:inline-block; font-weight:700;">View in My Complaints</a>
+         <a href="track.html" class="btn btn-sm btn-outline" style="display:inline-block; font-weight:700;">Track Live Status</a>
+       </div>`
     );
 
-    // Clear the form
     document.getElementById('complaint-form').reset();
 
   } catch (err) {

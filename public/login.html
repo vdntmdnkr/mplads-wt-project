@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login &amp; Role Access – MPLADS Monitor</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .auth-container {
+      max-width: 480px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+    .auth-card {
+      background: #ffffff;
+      border-radius: var(--radius, 8px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      border: 1px solid var(--border, #dce1e7);
+      padding: 32px 28px;
+    }
+    .auth-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border, #dce1e7);
+      margin-bottom: 24px;
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      color: var(--text-light, #7f8c8d);
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .auth-tab.active {
+      color: var(--primary, #1a4b8c);
+      border-bottom-color: var(--primary, #1a4b8c);
+    }
+    .demo-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .demo-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .demo-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .demo-login-btn {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .demo-login-btn:hover {
+      border-color: var(--primary, #1a4b8c);
+      background: #f0f7ff;
+      transform: translateY(-1px);
+    }
+    .demo-role-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .tag-authority { background: #fef3c7; color: #b45309; }
+    .tag-citizen { background: #dcfce7; color: #15803d; }
+    .demo-user-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text, #2c3e50);
+    }
+    .demo-user-sub {
+      font-size: 0.75rem;
+      color: var(--text-light, #7f8c8d);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-brand">
+      MPLADS Monitor
+      <span class="gov-badge">GOV</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="map.html">GIS Map</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
+      <li><a href="track.html">Track Complaint</a></li>
+      <li><a href="report.html" class="btn-report">Report Issue</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Main Auth Content ───────────────────────────────── -->
+  <div class="auth-container">
+    <div class="auth-card">
+
+      <div style="text-align:center; margin-bottom:20px;">
+        <h2 style="color:var(--primary, #1a4b8c); font-size:1.45rem; margin-bottom:4px;">MPLADS Portal Access</h2>
+        <p style="font-size:0.88rem; color:var(--text-light, #7f8c8d);">
+          Choose your role: District Authority or Citizen
+        </p>
+      </div>
+
+      <!-- Quick 1-Click Demo Login Panel -->
+      <div class="demo-box">
+        <div class="demo-title">
+          <span>1-Click Sample Logins</span>
+          <span style="font-size:0.75rem; font-weight:normal; color:#64748b;">(Click to Sign In)</span>
+        </div>
+        <div class="demo-btn-grid">
+          <!-- District Authority Button -->
+          <button type="button" class="demo-login-btn" onclick="demoLogin('pune.authority@mplads.gov.in', 'pune123')">
+            <span class="demo-role-tag tag-authority">District Authority</span>
+            <div class="demo-user-name">District Authority</div>
+            <div class="demo-user-sub">District: <strong>Pune</strong></div>
+          </button>
+
+          <!-- Citizen Button -->
+          <button type="button" class="demo-login-btn" onclick="demoLogin('citizen@example.com', 'citizen123')">
+            <span class="demo-role-tag tag-citizen">Citizen</span>
+            <div class="demo-user-name">Rahul Sharma</div>
+            <div class="demo-user-sub">Grievance &amp; Tracking</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="auth-alert" class="alert alert-error" style="display:none; margin-bottom:16px;"></div>
+
+      <!-- Tabs: Sign In / Register -->
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</div>
+        <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Register Citizen</div>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group" style="margin-bottom:16px;">
+          <label for="login-email">Email Address *</label>
+          <input type="email" id="login-email" placeholder="e.g. pune.authority@mplads.gov.in" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label for="login-password">Password *</label>
+          <input type="password" id="login-password" placeholder="Enter your password" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom:20px;">
+          <label for="login-role">Select Role</label>
+          <select id="login-role">
+            <option value="">Any Role (Auto-detect)</option>
+            <option value="authority">District Authority (Pune)</option>
+            <option value="citizen">Citizen</option>
+          </select>
+        </div>
+
+        <button type="submit" id="btn-login" class="btn btn-primary" style="width:100%; padding:12px; font-size:1rem;">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Register Form (Hidden by default) -->
+      <form id="register-form" style="display:none;" onsubmit="handleRegister(event)">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label for="reg-name">Full Name *</label>
+          <input type="text" id="reg-name" placeholder="e.g. Priya Patil" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label for="reg-email">Email Address *</label>
+          <input type="email" id="reg-email" placeholder="e.g. priya@example.com" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label for="reg-password">Password *</label>
+          <input type="password" id="reg-password" placeholder="At least 4 characters" minlength="4" required />
+        </div>
+
+        <div class="form-row" style="margin-bottom:14px;">
+          <div class="form-group">
+            <label for="reg-district">District</label>
+            <input type="text" id="reg-district" value="Pune" placeholder="e.g. Pune" />
+          </div>
+          <div class="form-group">
+            <label for="reg-phone">Phone Number</label>
+            <input type="tel" id="reg-phone" placeholder="10-digit mobile" />
+          </div>
+        </div>
+
+        <button type="submit" id="btn-register" class="btn btn-primary" style="width:100%; padding:12px; font-size:1rem;">
+          Create Citizen Account
+        </button>
+      </form>
+
+      <div style="text-align:center; margin-top:20px; font-size:0.82rem; color:var(--text-light, #7f8c8d);">
+        Data is securely stored in the application database (MongoDB / SQLite).
+      </div>
+
+    </div>
+
+    <!-- Role Permissions Table (SIH PS 26102 Guidelines) -->
+    <div style="margin-top:20px; background:#ffffff; border-radius:8px; border:1px solid var(--border, #dce1e7); padding:20px 22px; font-size:0.84rem; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+      <h4 style="margin:0 0 10px 0; color:var(--primary, #1a4b8c); font-size:0.95rem;">
+        Role Permissions (SIH 26102 MoSPI Architecture)
+      </h4>
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:2px solid #e2e8f0; text-align:left; color:#64748b; font-size:0.75rem; text-transform:uppercase;">
+            <th style="padding:6px 4px;">System Feature</th>
+            <th style="padding:6px 4px;">Citizen</th>
+            <th style="padding:6px 4px;">District Authority (Pune)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:6px 4px;">File Project Grievance</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Authorized</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Authorized</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:6px 4px;">Track Complaint Status</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Authorized</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Authorized</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:6px 4px;">Public Overview &amp; Dashboard</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Basic Public Stats</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Full Access</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:6px 4px;">GIS Interactive Map</td>
+            <td style="padding:6px 4px; color:#dc2626; font-weight:700;">Restricted</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Full Spatial Access</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:6px 4px;">AI Anomaly / Fraud Engine</td>
+            <td style="padding:6px 4px; color:#dc2626; font-weight:700;">Restricted (Internal)</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Full Analytical Access</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:6px 4px;">Complaint Status Resolution</td>
+            <td style="padding:6px 4px; color:#dc2626; font-weight:700;">Cannot change</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Review / Resolve / Reject</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 4px;">Create / Update Works</td>
+            <td style="padding:6px 4px; color:#dc2626; font-weight:700;">Cannot create</td>
+            <td style="padding:6px 4px; color:#16a34a; font-weight:700;">Authorized (Pune)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <footer style="margin-top:60px;">
+    <div class="footer-bottom">
+      <p>© 2024 MPLADS Monitor | Web Technology Full Stack Project</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script>
+    function switchTab(tab) {
+      const loginTab = document.getElementById('tab-login');
+      const regTab = document.getElementById('tab-register');
+      const loginForm = document.getElementById('login-form');
+      const regForm = document.getElementById('register-form');
+      const alertBox = document.getElementById('auth-alert');
+      alertBox.style.display = 'none';
+
+      if (tab === 'login') {
+        loginTab.classList.add('active');
+        regTab.classList.remove('active');
+        loginForm.style.display = 'block';
+        regForm.style.display = 'none';
+      } else {
+        loginTab.classList.remove('active');
+        regTab.classList.add('active');
+        loginForm.style.display = 'none';
+        regForm.style.display = 'block';
+      }
+    }
+
+    // 1-Click Sample Login
+    async function demoLogin(email, password) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = password;
+      switchTab('login');
+      await executeLogin(email, password, '');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const role = document.getElementById('login-role').value;
+      await executeLogin(email, password, role);
+    }
+
+    async function executeLogin(email, password, role) {
+      const alertBox = document.getElementById('auth-alert');
+      const submitBtn = document.getElementById('btn-login');
+      alertBox.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying...';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, role })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Authentication failed');
+        }
+
+        // Store user session in localStorage
+        setCurrentUser(data.user);
+
+        alertBox.className = 'alert alert-success';
+        alertBox.textContent = data.message || 'Login successful! Redirecting...';
+        alertBox.style.display = 'block';
+
+        setTimeout(() => {
+          const redirect = new URLSearchParams(window.location.search).get('redirect');
+          if (redirect) {
+            window.location.href = redirect;
+          } else if (data.user.role === 'authority') {
+            window.location.href = 'authority.html';
+          } else {
+            window.location.href = 'index.html';
+          }
+        }, 800);
+
+      } catch (err) {
+        alertBox.className = 'alert alert-error';
+        alertBox.textContent = err.message;
+        alertBox.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const alertBox = document.getElementById('auth-alert');
+      const submitBtn = document.getElementById('btn-register');
+      alertBox.style.display = 'none';
+
+      const payload = {
+        name: document.getElementById('reg-name').value,
+        email: document.getElementById('reg-email').value,
+        password: document.getElementById('reg-password').value,
+        district: document.getElementById('reg-district').value || 'Pune',
+        phone: document.getElementById('reg-phone').value,
+        role: 'citizen'
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registering...';
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Registration failed');
+        }
+
+        // Automatically log user in
+        setCurrentUser(data.user);
+
+        alertBox.className = 'alert alert-success';
+        alertBox.textContent = 'Account created successfully! Redirecting...';
+        alertBox.style.display = 'block';
+
+        setTimeout(() => {
+          const redirect = new URLSearchParams(window.location.search).get('redirect');
+          if (redirect) {
+            window.location.href = redirect;
+          } else {
+            window.location.href = 'index.html';
+          }
+        }, 900);
+
+      } catch (err) {
+        alertBox.className = 'alert alert-error';
+        alertBox.textContent = err.message;
+        alertBox.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Citizen Account';
+      }
+    }
+
+    // If already logged in, show status
+    const current = getCurrentUser();
+    const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+
+    if (redirectParam && !current) {
+      const alertBox = document.getElementById('auth-alert');
+      alertBox.className = 'alert alert-info';
+      alertBox.innerHTML = `<strong>Citizen Login Required:</strong> You must be signed in to submit a project grievance. Please sign in or register below; you will be directed to the complaint form automatically.`;
+      alertBox.style.display = 'block';
+    } else if (current) {
+      const alertBox = document.getElementById('auth-alert');
+      alertBox.className = 'alert alert-info';
+      alertBox.innerHTML = `You are currently logged in as <strong>${escapeHtml(current.name)}</strong> (${escapeHtml(current.role)}). <a href="#" onclick="logoutUser()">Log out?</a>`;
+      alertBox.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>

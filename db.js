@@ -33,6 +33,7 @@ let sqliteDb = null;
 // In-memory data store as universal fallback
 let memoryProjects = [];
 let memoryComplaints = [];
+let memoryUsers = [];
 
 function loadSeedData() {
   if (fs.existsSync(SEED_FILE)) {
@@ -40,12 +41,13 @@ function loadSeedData() {
       const data = JSON.parse(fs.readFileSync(SEED_FILE, 'utf8'));
       memoryProjects = (data.projects || []).map((p, idx) => ({ ...p, id: idx + 1, _id: idx + 1 }));
       memoryComplaints = (data.complaints || []).map((c, idx) => ({ ...c, id: idx + 1, _id: idx + 1 }));
+      memoryUsers = (data.users || []).map((u, idx) => ({ ...u, id: idx + 1, _id: idx + 1 }));
       return data;
     } catch (e) {
       console.error('Error loading seed file:', e.message);
     }
   }
-  return { projects: [], complaints: [] };
+  return { projects: [], complaints: [], users: [] };
 }
 
 // Pre-load in-memory records
@@ -54,6 +56,7 @@ loadSeedData();
 // Load Mongoose models
 const MongoProject = require('./models/Project');
 const MongoComplaint = require('./models/Complaint');
+const MongoUser = require('./models/User');
 
 // ── Initialize SQLite ─────────────────────────────────────────
 function initSqlite() {
@@ -82,6 +85,8 @@ function initSqlite() {
               recommendedAmount REAL DEFAULT 0,
               sanctionedAmount REAL DEFAULT 0,
               completedAmount REAL DEFAULT 0,
+              latitude REAL,
+              longitude REAL,
               createdAt TEXT
             )
           `);
@@ -96,43 +101,103 @@ function initSqlite() {
               category TEXT,
               description TEXT,
               status TEXT DEFAULT 'Submitted',
+              createdAt TEXT,
+              citizenEmail TEXT
+            )
+          `, () => {
+            // Add citizenEmail column if complaints table was previously created without it
+            sqliteDb.run('ALTER TABLE complaints ADD COLUMN citizenEmail TEXT', () => {});
+          });
+
+          sqliteDb.run(`
+            CREATE TABLE IF NOT EXISTS users (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT,
+              email TEXT UNIQUE,
+              password TEXT,
+              role TEXT DEFAULT 'citizen',
+              district TEXT DEFAULT 'Pune',
+              phone TEXT,
               createdAt TEXT
             )
           `);
 
-          sqliteDb.get('SELECT COUNT(*) as count FROM projects', (countErr, row) => {
-            if (!countErr && row && row.count === 0) {
-              const seedData = loadSeedData();
-              const projStmt = sqliteDb.prepare(`
-                INSERT OR IGNORE INTO projects
-                (workId, title, category, state, district, constituency, mpName, status, recommendedAmount, sanctionedAmount, completedAmount, createdAt)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-              `);
-              seedData.projects.forEach(p => {
-                projStmt.run(
-                  p.workId, p.title, p.category, p.state, p.district,
-                  p.constituency, p.mpName, p.status,
-                  p.recommendedAmount || 0, p.sanctionedAmount || 0, p.completedAmount || 0,
-                  new Date().toISOString()
-                );
-              });
-              projStmt.finalize();
+          // Safe migrations for coordinates
+          sqliteDb.run('ALTER TABLE projects ADD COLUMN latitude REAL', () => {});
+          sqliteDb.run('ALTER TABLE projects ADD COLUMN longitude REAL', () => {});
 
-              const compStmt = sqliteDb.prepare(`
-                INSERT OR IGNORE INTO complaints
-                (ticketId, name, phone, projectId, category, description, status, createdAt)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-              `);
-              seedData.complaints.forEach(c => {
-                compStmt.run(
-                  c.ticketId, c.name, c.phone, c.projectId,
-                  c.category, c.description, c.status || 'Submitted',
-                  new Date().toISOString()
-                );
-              });
-              compStmt.finalize();
-              console.log(`[DB] SQLite initialized and seeded with ${seedData.projects.length} projects.`);
-            }
+          const seedData = loadSeedData();
+
+          // Seed or update projects
+          sqliteDb.get('SELECT COUNT(*) as count FROM projects', (countErr, row) => {
+            const projStmt = sqliteDb.prepare(`
+              INSERT OR IGNORE INTO projects
+              (workId, title, category, state, district, constituency, mpName, status, recommendedAmount, sanctionedAmount, completedAmount, latitude, longitude, createdAt)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `);
+            const updateCoordStmt = sqliteDb.prepare(`
+              UPDATE projects SET latitude = ?, longitude = ? WHERE workId = ?
+            `);
+
+            seedData.projects.forEach(p => {
+              projStmt.run(
+                p.workId, p.title, p.category, p.state, p.district,
+                p.constituency, p.mpName, p.status,
+                p.recommendedAmount || 0, p.sanctionedAmount || 0, p.completedAmount || 0,
+                p.latitude || null, p.longitude || null,
+                new Date().toISOString()
+              );
+              if (p.latitude && p.longitude) {
+                updateCoordStmt.run(p.latitude, p.longitude, p.workId);
+              }
+            });
+            projStmt.finalize();
+            updateCoordStmt.finalize();
+
+            // Seed complaints if empty
+            sqliteDb.get('SELECT COUNT(*) as count FROM complaints', (cErr, cRow) => {
+              if (!cErr && cRow && cRow.count === 0) {
+                const compStmt = sqliteDb.prepare(`
+                  INSERT OR IGNORE INTO complaints
+                  (ticketId, name, phone, projectId, category, description, status, createdAt)
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                `);
+                seedData.complaints.forEach(c => {
+                  compStmt.run(
+                    c.ticketId, c.name, c.phone, c.projectId,
+                    c.category, c.description, c.status || 'Submitted',
+                    new Date().toISOString()
+                  );
+                });
+                compStmt.finalize();
+              }
+            });
+
+            // Seed users if empty
+            sqliteDb.get('SELECT COUNT(*) as count FROM users', (uErr, uRow) => {
+              if (!uErr && (!uRow || uRow.count === 0)) {
+                const userStmt = sqliteDb.prepare(`
+                  INSERT OR IGNORE INTO users
+                  (name, email, password, role, district, phone, createdAt)
+                  VALUES (?, ?, ?, ?, ?, ?, ?)
+                `);
+                (seedData.users || []).forEach(u => {
+                  userStmt.run(
+                    u.name,
+                    (u.email || '').toLowerCase().trim(),
+                    u.password,
+                    u.role || 'citizen',
+                    u.district || 'Pune',
+                    u.phone || '',
+                    new Date().toISOString()
+                  );
+                });
+                userStmt.finalize();
+                console.log(`[DB] SQLite users table initialized with sample users (Pune Authority & Citizen).`);
+              }
+            });
+
+            console.log(`[DB] SQLite initialized and synchronized with ${seedData.projects.length} projects.`);
             isUsingSqlite = true;
             resolve(sqliteDb);
           });
@@ -157,11 +222,17 @@ async function connectDB() {
     console.log('[DB] MongoDB connected successfully at', MONGO_URI);
 
     const count = await MongoProject.countDocuments();
+    const seedData = loadSeedData();
     if (count === 0) {
-      const seedData = loadSeedData();
       await MongoProject.insertMany(seedData.projects);
       await MongoComplaint.insertMany(seedData.complaints);
       console.log(`[DB] MongoDB seeded with ${seedData.projects.length} sample projects.`);
+    }
+
+    const uCount = await MongoUser.countDocuments();
+    if (uCount === 0 && seedData.users && seedData.users.length > 0) {
+      await MongoUser.insertMany(seedData.users);
+      console.log(`[DB] MongoDB seeded with ${seedData.users.length} sample users.`);
     }
   } catch (err) {
     isUsingMongo = false;
@@ -303,6 +374,53 @@ const JsonComplaint = {
   }
 };
 
+const JsonUser = {
+  find: (filter = {}) => {
+    let list = memoryUsers.map(u => ({ id: u.id, _id: u._id, name: u.name, email: u.email, role: u.role, district: u.district, phone: u.phone, createdAt: u.createdAt }));
+    if (filter.role) list = list.filter(u => u.role === filter.role);
+    if (filter.district) list = list.filter(u => u.district === filter.district);
+    return Promise.resolve(list);
+  },
+
+  findOne: (query = {}) => {
+    const user = memoryUsers.find(u => {
+      if (query.email && (u.email || '').toLowerCase() === (query.email || '').toLowerCase()) return true;
+      if ((query._id || query.id) && String(u.id) === String(query._id || query.id)) return true;
+      return false;
+    });
+    return Promise.resolve(user ? { ...user } : null);
+  },
+
+  findById: (id) => {
+    const user = memoryUsers.find(u => String(u.id) === String(id) || String(u._id) === String(id));
+    if (!user) return Promise.resolve(null);
+    const { password, ...safe } = user;
+    return Promise.resolve(safe);
+  },
+
+  create: (data) => {
+    const existing = memoryUsers.find(u => (u.email || '').toLowerCase() === (data.email || '').toLowerCase());
+    if (existing) return Promise.reject(new Error('User with this email already exists'));
+    const newId = memoryUsers.length + 1;
+    const item = {
+      id: newId,
+      _id: newId,
+      name: data.name,
+      email: (data.email || '').toLowerCase().trim(),
+      password: data.password,
+      role: data.role || 'citizen',
+      district: data.district || 'Pune',
+      phone: data.phone || '',
+      createdAt: new Date().toISOString()
+    };
+    memoryUsers.push(item);
+    const { password, ...safe } = item;
+    return Promise.resolve(safe);
+  },
+
+  countDocuments: () => Promise.resolve(memoryUsers.length)
+};
+
 // ── SQLite Operations (Used when sqlite3 is available) ───────
 const SqliteProject = {
   find: (filter = {}) => ({
@@ -314,6 +432,7 @@ const SqliteProject = {
       if (filter.constituency && filter.constituency.$regex) { sql += ' AND constituency LIKE ?'; params.push(`%${filter.constituency.$regex}%`); }
       if (filter.mpName && filter.mpName.$regex) { sql += ' AND mpName LIKE ?'; params.push(`%${filter.mpName.$regex}%`); }
       if (filter.status && filter.status.$regex) { sql += ' AND status LIKE ?'; params.push(`%${filter.status.$regex}%`); }
+      if (filter.category && filter.category.$regex) { sql += ' AND category LIKE ?'; params.push(`%${filter.category.$regex}%`); }
       if (filter.$or) {
         const searchVal = filter.$or[0].title.$regex;
         sql += ' AND (title LIKE ? OR workId LIKE ?)';
@@ -337,13 +456,14 @@ const SqliteProject = {
 
   create: (data) => new Promise((resolve, reject) => {
     const sql = `
-      INSERT INTO projects (workId, title, category, state, district, constituency, mpName, status, recommendedAmount, sanctionedAmount, completedAmount, createdAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO projects (workId, title, category, state, district, constituency, mpName, status, recommendedAmount, sanctionedAmount, completedAmount, latitude, longitude, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     sqliteDb.run(sql, [
       data.workId, data.title, data.category, data.state, data.district,
       data.constituency, data.mpName, data.status || 'Recommended',
       data.recommendedAmount || 0, data.sanctionedAmount || 0, data.completedAmount || 0,
+      data.latitude || null, data.longitude || null,
       new Date().toISOString()
     ], function(err) {
       if (err) return reject(err);
@@ -399,9 +519,25 @@ const SqliteProject = {
   }),
 
   aggregate: (pipeline = []) => new Promise((resolve, reject) => {
-    if (pipeline[1] && pipeline[1].$group && pipeline[1].$group._id === null) {
-      let sql = 'SELECT SUM(sanctionedAmount) as totalSanctioned, SUM(completedAmount) as totalCompleted, SUM(recommendedAmount) as totalRecommended FROM projects';
-      sqliteDb.get(sql, (err, row) => {
+    let matchObj = {};
+    let groupStage = null;
+    for (const stage of pipeline) {
+      if (stage.$match) matchObj = { ...matchObj, ...stage.$match };
+      if (stage.$group) groupStage = stage.$group;
+    }
+
+    if (groupStage && groupStage._id === null) {
+      let sql = 'SELECT SUM(sanctionedAmount) as totalSanctioned, SUM(completedAmount) as totalCompleted, SUM(recommendedAmount) as totalRecommended FROM projects WHERE 1=1';
+      const params = [];
+      if (matchObj.state && matchObj.state.$regex) {
+        sql += ' AND state LIKE ?';
+        params.push(`%${matchObj.state.$regex}%`);
+      }
+      if (matchObj.district && matchObj.district.$regex) {
+        sql += ' AND district LIKE ?';
+        params.push(`%${matchObj.district.$regex}%`);
+      }
+      sqliteDb.get(sql, params, (err, row) => {
         if (err) return reject(err);
         resolve([{
           _id: null,
@@ -410,16 +546,21 @@ const SqliteProject = {
           totalRecommended: (row && row.totalRecommended) || 0
         }]);
       });
-    } else if (pipeline[0] && pipeline[0].$group && pipeline[0].$group._id === '$state') {
+    } else if (groupStage && groupStage._id === '$state') {
       let sql = `
         SELECT state as _id, COUNT(*) as totalProjects,
                SUM(CASE WHEN status LIKE '%Completed%' AND status NOT LIKE '%partially%' THEN 1 ELSE 0 END) as completed,
                SUM(sanctionedAmount) as totalSanctioned,
                SUM(completedAmount) as totalSpent
         FROM projects WHERE state IS NOT NULL AND state != ''
-        GROUP BY state ORDER BY totalProjects DESC LIMIT 20
       `;
-      sqliteDb.all(sql, (err, rows) => {
+      const params = [];
+      if (matchObj.state && matchObj.state.$regex) {
+        sql += ' AND state LIKE ?';
+        params.push(`%${matchObj.state.$regex}%`);
+      }
+      sql += ' GROUP BY state ORDER BY totalProjects DESC LIMIT 20';
+      sqliteDb.all(sql, params, (err, rows) => {
         if (err) return reject(err);
         resolve(rows || []);
       });
@@ -435,7 +576,18 @@ const SqliteComplaint = {
       limit: (limitNum = 100) => new Promise((resolve, reject) => {
         let sql = 'SELECT * FROM complaints WHERE 1=1';
         const params = [];
-        if (filter.status) { sql += ' AND status = ?'; params.push(filter.status); }
+        if (filter.status) {
+          sql += ' AND status = ?';
+          params.push(filter.status);
+        }
+        if (filter.citizenEmail) {
+          sql += ' AND citizenEmail = ?';
+          params.push(filter.citizenEmail);
+        }
+        if (filter.district) {
+          sql += ' AND (district = ? OR projectId LIKE ?)';
+          params.push(filter.district, `%${filter.district}%`);
+        }
         sql += ' ORDER BY id DESC LIMIT ?';
         params.push(limitNum);
         sqliteDb.all(sql, params, (err, rows) => {
@@ -453,8 +605,14 @@ const SqliteComplaint = {
     });
   }),
 
-  countDocuments: () => new Promise((resolve, reject) => {
-    sqliteDb.get('SELECT COUNT(*) as cnt FROM complaints', (err, row) => {
+  countDocuments: (filter = {}) => new Promise((resolve, reject) => {
+    let sql = 'SELECT COUNT(*) as cnt FROM complaints WHERE 1=1';
+    const params = [];
+    if (filter.citizenEmail) {
+      sql += ' AND citizenEmail = ?';
+      params.push(filter.citizenEmail);
+    }
+    sqliteDb.get(sql, params, (err, row) => {
       if (err) return reject(err);
       resolve(row ? row.cnt : 0);
     });
@@ -462,13 +620,13 @@ const SqliteComplaint = {
 
   create: (data) => new Promise((resolve, reject) => {
     const sql = `
-      INSERT INTO complaints (ticketId, name, phone, projectId, category, description, status, createdAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO complaints (ticketId, name, phone, projectId, category, description, status, createdAt, citizenEmail)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const dateStr = new Date().toISOString();
     sqliteDb.run(sql, [
-      data.ticketId, data.name, data.phone || '', data.projectId || '',
-      data.category, data.description, data.status || 'Submitted', dateStr
+      data.ticketId, data.name || 'Anonymous Citizen', data.phone || '', data.projectId || '',
+      data.category, data.description, data.status || 'Submitted', dateStr, data.citizenEmail || ''
     ], function(err) {
       if (err) return reject(err);
       resolve({ ...data, id: this.lastID, _id: this.lastID, createdAt: dateStr });
@@ -482,6 +640,79 @@ const SqliteComplaint = {
         if (getErr) return reject(getErr);
         resolve(row ? { ...row, _id: row.id } : null);
       });
+    });
+  })
+};
+
+const SqliteUser = {
+  find: (filter = {}) => new Promise((resolve, reject) => {
+    let sql = 'SELECT id, name, email, role, district, phone, createdAt FROM users WHERE 1=1';
+    const params = [];
+    if (filter.role) { sql += ' AND role = ?'; params.push(filter.role); }
+    if (filter.district) { sql += ' AND district = ?'; params.push(filter.district); }
+    sqliteDb.all(sql, params, (err, rows) => {
+      if (err) return reject(err);
+      resolve(rows.map(r => ({ ...r, _id: r.id })));
+    });
+  }),
+
+  findOne: (query = {}) => new Promise((resolve, reject) => {
+    let sql = 'SELECT * FROM users WHERE 1=1';
+    const params = [];
+    if (query.email) {
+      sql += ' AND LOWER(email) = LOWER(?)';
+      params.push(String(query.email).trim());
+    }
+    if (query._id || query.id) {
+      sql += ' AND id = ?';
+      params.push(query._id || query.id);
+    }
+    sqliteDb.get(sql, params, (err, row) => {
+      if (err) return reject(err);
+      resolve(row ? { ...row, _id: row.id } : null);
+    });
+  }),
+
+  findById: (id) => new Promise((resolve, reject) => {
+    sqliteDb.get('SELECT id, name, email, role, district, phone, createdAt FROM users WHERE id = ?', [id], (err, row) => {
+      if (err) return reject(err);
+      resolve(row ? { ...row, _id: row.id } : null);
+    });
+  }),
+
+  create: (data) => new Promise((resolve, reject) => {
+    const sql = `
+      INSERT INTO users (name, email, password, role, district, phone, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    const dateStr = new Date().toISOString();
+    sqliteDb.run(sql, [
+      data.name,
+      (data.email || '').toLowerCase().trim(),
+      data.password,
+      data.role || 'citizen',
+      data.district || 'Pune',
+      data.phone || '',
+      dateStr
+    ], function(err) {
+      if (err) return reject(err);
+      resolve({
+        id: this.lastID,
+        _id: this.lastID,
+        name: data.name,
+        email: data.email,
+        role: data.role || 'citizen',
+        district: data.district || 'Pune',
+        phone: data.phone || '',
+        createdAt: dateStr
+      });
+    });
+  }),
+
+  countDocuments: () => new Promise((resolve, reject) => {
+    sqliteDb.get('SELECT COUNT(*) as cnt FROM users', (err, row) => {
+      if (err) return reject(err);
+      resolve(row ? row.cnt : 0);
     });
   })
 };
@@ -503,11 +734,21 @@ const ComplaintProxy = new Proxy({}, {
   }
 });
 
+const UserProxy = new Proxy({}, {
+  get: (target, prop) => {
+    if (isUsingMongo) return MongoUser[prop];
+    if (isUsingSqlite && sqliteDb) return SqliteUser[prop];
+    return JsonUser[prop];
+  }
+});
+
 module.exports = {
   connectDB,
   isUsingMongo: () => isUsingMongo,
   Project: ProjectProxy,
   Complaint: ComplaintProxy,
+  User: UserProxy,
   MongoProject,
-  MongoComplaint
+  MongoComplaint,
+  MongoUser
 };

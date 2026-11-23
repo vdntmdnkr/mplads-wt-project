@@ -1,9 +1,9 @@
-# 🎓 Web Technology Full Stack Viva & Defense Guide
+#  Web Technology Full Stack Viva & Defense Guide
 ## Project: MPLADS Public Monitor & Accountability System
 
 ---
 
-## 📌 1. Project Elevator Pitch (Say this in the first 30 seconds)
+##  1. Project Elevator Pitch (Say this in the first 30 seconds)
 > *"Good morning Sir/Madam. Our project is **MPLADS Monitor**, a Full-Stack Web Application for tracking development projects recommended by Members of Parliament under the MPLADS scheme.
 > We built this using the complete Web Technology stack:
 > - **Frontend**: Semantic HTML5, responsive CSS3 (Flexbox & CSS Grid without frameworks), and Vanilla JavaScript (Fetch API + DOM Manipulation).
@@ -14,7 +14,7 @@
 
 ---
 
-## 🧱 2. Complete Architecture (How Data Flows)
+##  2. Complete Architecture (How Data Flows)
 
 ```
 [Browser / User]
@@ -41,7 +41,7 @@
 
 ---
 
-## 💻 3. File-by-File Walkthrough (Where is everything?)
+##  3. File-by-File Walkthrough (Where is everything?)
 
 | File / Folder | Role in Syllabus | What it does |
 |---|---|---|
@@ -66,7 +66,7 @@
 
 ---
 
-## 🎯 4. Top 15 Viva Questions & Exact Answers
+##  4. Top 15 Viva Questions & Exact Answers
 
 ### Q1: What is semantic HTML and why did you use it?
 **Answer:**
@@ -176,7 +176,7 @@
 
 ---
 
-## ⚡ 5. "Change This On The Spot" Cheatsheet
+##  5. "Change This On The Spot" Cheatsheet
 
 During viva, examiners love asking you to make quick live changes to test if you wrote the code:
 
@@ -212,12 +212,12 @@ During viva, examiners love asking you to make quick live changes to test if you
 - Open `public/report.html`.
 - Find `<select id="category">` and add:
   ```html
-  <option value="Environmental">🌳 Environmental Impact</option>
+  <option value="Environmental"> Environmental Impact</option>
   ```
 
 ---
 
-## 🚀 6. How to Run for Demo
+##  6. How to Run for Demo
 
 ```bash
 # 1. Open Terminal in the project directory:

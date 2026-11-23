@@ -14,6 +14,7 @@
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="map.html">GIS Map</a></li>
       <li><a href="projects.html">Projects</a></li>
       <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
       <li><a href="track.html" class="active">Track Complaint</a></li>
@@ -54,8 +55,8 @@
             <td style="padding:8px 0; border:none; font-weight:700; font-family:monospace;" id="res-ticketId">—</td>
           </tr>
           <tr>
-            <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Citizen Name:</td>
-            <td style="padding:8px 0; border:none;" id="res-name">—</td>
+            <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Complainant:</td>
+            <td style="padding:8px 0; border:none; color:#15803d; font-weight:600;" id="res-name">Anonymous Citizen (Protected)</td>
           </tr>
           <tr>
             <td style="padding:8px 0; font-weight:600; border:none; color:var(--text-light);">Category:</td>
@@ -96,6 +97,7 @@
     </div>
   </footer>
 
+  <script src="js/auth.js"></script>
   <script src="js/track.js"></script>
 
 </body>

@@ -74,7 +74,14 @@ router.get('/summary', async (req, res) => {
 // Group projects by state for the breakdown table
 router.get('/by-state', async (req, res) => {
   try {
-    const stateStats = await Project.aggregate([
+    const { state } = req.query;
+    const pipeline = [];
+
+    if (state) {
+      pipeline.push({ $match: { state: { $regex: state, $options: 'i' } } });
+    }
+
+    pipeline.push(
       {
         $group: {
           _id:             '$state',
@@ -86,7 +93,9 @@ router.get('/by-state', async (req, res) => {
       },
       { $sort: { totalProjects: -1 } },
       { $limit: 20 }
-    ]);
+    );
+
+    const stateStats = await Project.aggregate(pipeline);
 
     const result = stateStats.map(s => {
       const tot = s.totalProjects || 0;

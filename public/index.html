@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MPLADS Monitor – Home</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
 
   <!-- ── Navbar ─────────────────────────────────────────── -->
@@ -17,6 +19,7 @@
     <ul class="nav-links">
       <li><a href="index.html" class="active">Home</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="map.html">GIS Map</a></li>
       <li><a href="projects.html">Projects</a></li>
       <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
       <li><a href="track.html">Track Complaint</a></li>
@@ -29,12 +32,12 @@
     <h1>MPLADS Public Monitor</h1>
     <p>
       Transparent tracking of Member of Parliament Local Area Development Scheme projects
-      across India. Real data. Full accountability.
+      across India. Powered by AI anomaly detection with dedicated citizen grievance redressal.
     </p>
     <div class="hero-buttons">
       <a href="dashboard.html" class="btn btn-primary">View Dashboard</a>
-      <a href="ai-analytics.html" class="btn btn-outline">AI Anomaly Monitor</a>
-      <a href="projects.html" class="btn btn-outline">Browse Projects</a>
+      <a href="report.html" class="btn btn-outline" style="border-color:#fff; color:#fff;">Report Issue</a>
+      <a href="track.html" class="btn btn-outline" style="border-color:#fff; color:#fff;">Track Complaint</a>
     </div>
   </section>
 
@@ -42,7 +45,7 @@
   <section class="section">
     <div class="container">
       <h2 class="section-title">National Overview</h2>
-      <div class="kpi-grid" id="kpi-grid">
+      <div class="kpi-grid kpi-grid-6" id="kpi-grid">
         <div class="kpi-card">
           <div class="kpi-number" id="stat-total">—</div>
           <div class="kpi-label">Total Projects</div>
@@ -77,22 +80,30 @@
       <h2 class="section-title">What We Track</h2>
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon" style="font-size:1.3rem; font-weight:800; color:var(--primary); background:#eaf0fb; width:44px; height:44px; line-height:44px; border-radius:50%; margin:0 auto 16px;">01</div>
+          <div class="feature-icon"
+            style="font-size:1.3rem; font-weight:800; color:var(--primary); background:#eaf0fb; width:44px; height:44px; line-height:44px; border-radius:50%; margin:0 auto 16px;">
+            01</div>
           <h3>Project Progress</h3>
           <p>Track status of every MPLADS project from recommendation to completion across all states.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon" style="font-size:1.3rem; font-weight:800; color:var(--primary); background:#eaf0fb; width:44px; height:44px; line-height:44px; border-radius:50%; margin:0 auto 16px;">02</div>
+          <div class="feature-icon"
+            style="font-size:1.3rem; font-weight:800; color:var(--primary); background:#eaf0fb; width:44px; height:44px; line-height:44px; border-radius:50%; margin:0 auto 16px;">
+            02</div>
           <h3>Fund Utilization</h3>
           <p>Monitor sanctioned amounts, expenditures, and utilization percentage for transparency.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon" style="font-size:1.3rem; font-weight:800; color:var(--primary); background:#eaf0fb; width:44px; height:44px; line-height:44px; border-radius:50%; margin:0 auto 16px;">03</div>
+          <div class="feature-icon"
+            style="font-size:1.3rem; font-weight:800; color:var(--primary); background:#eaf0fb; width:44px; height:44px; line-height:44px; border-radius:50%; margin:0 auto 16px;">
+            03</div>
           <h3>Public Accountability</h3>
           <p>Search works by Member of Parliament, state, district, or category to evaluate performance.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon" style="font-size:1.3rem; font-weight:800; color:var(--primary); background:#eaf0fb; width:44px; height:44px; line-height:44px; border-radius:50%; margin:0 auto 16px;">04</div>
+          <div class="feature-icon"
+            style="font-size:1.3rem; font-weight:800; color:var(--primary); background:#eaf0fb; width:44px; height:44px; line-height:44px; border-radius:50%; margin:0 auto 16px;">
+            04</div>
           <h3>Citizen Reporting</h3>
           <p>Citizens can report issues regarding project quality, delay, or fund misuse directly.</p>
         </div>
@@ -106,13 +117,13 @@
       <div class="card">
         <h2 style="color:var(--primary); margin-bottom:14px;">What is MPLADS?</h2>
         <p style="margin-bottom:12px; font-size:0.95rem;">
-          The <strong>Member of Parliament Local Area Development Scheme (MPLADS)</strong> is a 
-          Government of India programme that enables Members of Parliament to recommend 
+          The <strong>Member of Parliament Local Area Development Scheme (MPLADS)</strong> is a
+          Government of India programme that enables Members of Parliament to recommend
           development work in their constituencies with an annual entitlement of ₹5 crore per MP.
         </p>
         <p style="font-size:0.95rem; color:var(--text-light);">
-          Works recommended cover roads, community buildings, drinking water supply, health facilities, education 
-          infrastructure, and disaster relief — executed by district authorities and monitored 
+          Works recommended cover roads, community buildings, drinking water supply, health facilities, education
+          infrastructure, and disaster relief — executed by district authorities and monitored
           by the Ministry of Statistics & Programme Implementation (MoSPI).
         </p>
       </div>
@@ -124,25 +135,15 @@
     <div class="footer-grid">
       <div class="footer-col">
         <h4>MPLADS Monitor</h4>
-        <p style="font-size:0.85rem;">Transparency platform for MP Local Area Development Scheme projects across India.</p>
+        <p style="font-size:0.85rem;">Transparency platform for MP Local Area Development Scheme projects across India.
+        </p>
       </div>
       <div class="footer-col">
         <h4>Quick Links</h4>
         <ul>
           <li><a href="dashboard.html">Dashboard</a></li>
-          <li><a href="projects.html">Projects</a></li>
           <li><a href="report.html">Report Issue</a></li>
           <li><a href="track.html">Track Complaint</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Technology Stack</h4>
-        <ul>
-          <li>HTML5 & Semantic Elements</li>
-          <li>CSS3 (Flexbox & CSS Grid)</li>
-          <li>JavaScript (ES6+ Fetch API)</li>
-          <li>Node.js & Express REST API</li>
-          <li>MongoDB / SQLite Database</li>
         </ul>
       </div>
     </div>
@@ -152,17 +153,18 @@
   </footer>
 
   <!-- ── JavaScript: Fetch KPI Stats from API ───────────── -->
+  <script src="js/auth.js"></script>
   <script>
     async function loadStats() {
       try {
         const response = await fetch('/api/dashboard/summary');
         const data = await response.json();
 
-        document.getElementById('stat-total').textContent     = Number(data.totalProjects || 0).toLocaleString();
+        document.getElementById('stat-total').textContent = Number(data.totalProjects || 0).toLocaleString();
         document.getElementById('stat-completed').textContent = Number(data.completed || 0).toLocaleString();
-        document.getElementById('stat-ongoing').textContent   = Number(data.ongoing || 0).toLocaleString();
+        document.getElementById('stat-ongoing').textContent = Number(data.ongoing || 0).toLocaleString();
         document.getElementById('stat-sanctioned').textContent = Number(data.sanctioned || 0).toLocaleString();
-        document.getElementById('stat-states').textContent    = Number(data.totalStates || 0).toLocaleString();
+        document.getElementById('stat-states').textContent = Number(data.totalStates || 0).toLocaleString();
         document.getElementById('stat-utilization').textContent = (data.utilizationRate || 0) + '%';
       } catch (err) {
         document.getElementById('kpi-grid').innerHTML =
@@ -174,4 +176,5 @@
   </script>
 
 </body>
+
 </html>

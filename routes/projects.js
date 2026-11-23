@@ -12,7 +12,7 @@ const { Project } = require('../db');
 //   ?state=Maharashtra&status=Completed&search=road&limit=50
 router.get('/', async (req, res) => {
   try {
-    const { state, district, constituency, mp, status, search, limit = 50 } = req.query;
+    const { state, district, constituency, mp, status, category, search, limit = 50 } = req.query;
 
     // Build filter object (works on both Mongo and SQLite)
     const filter = {};
@@ -22,6 +22,7 @@ router.get('/', async (req, res) => {
     if (constituency)  filter.constituency = { $regex: constituency, $options: 'i' };
     if (mp)            filter.mpName       = { $regex: mp,           $options: 'i' };
     if (status)        filter.status       = { $regex: status,       $options: 'i' };
+    if (category)      filter.category     = { $regex: category,     $options: 'i' };
     if (search) {
       filter.$or = [
         { title:  { $regex: search, $options: 'i' } },
@@ -34,6 +35,56 @@ router.get('/', async (req, res) => {
 
   } catch (err) {
     console.error('Error in GET /api/projects:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── 1b. GET /api/projects/map ─────────────────────────────────
+// Returns projects formatted with coordinates for GIS Map
+router.get('/map', async (req, res) => {
+  try {
+    const { status, district, state } = req.query;
+    const filter = {};
+    if (status)   filter.status   = { $regex: status,   $options: 'i' };
+    if (district) filter.district = { $regex: district, $options: 'i' };
+    if (state)    filter.state    = { $regex: state,    $options: 'i' };
+
+    const projects = await Project.find(filter).limit(200);
+
+    // Fallback coordinates dictionary if missing in DB
+    const PUNE_BASE = { lat: 18.5204, lng: 73.8567 };
+
+    const mapped = projects.map(p => {
+      let lat = p.latitude;
+      let lng = p.longitude;
+      if (!lat || !lng) {
+        if ((p.district || '').toLowerCase() === 'pune') {
+          lat = PUNE_BASE.lat + (Math.random() - 0.5) * 0.08;
+          lng = PUNE_BASE.lng + (Math.random() - 0.5) * 0.08;
+        }
+      }
+      return {
+        _id: p._id || p.id,
+        id: p.id || p._id,
+        workId: p.workId,
+        title: p.title,
+        category: p.category,
+        state: p.state,
+        district: p.district,
+        constituency: p.constituency,
+        mpName: p.mpName,
+        status: p.status,
+        recommendedAmount: p.recommendedAmount || 0,
+        sanctionedAmount: p.sanctionedAmount || 0,
+        completedAmount: p.completedAmount || 0,
+        latitude: lat,
+        longitude: lng
+      };
+    }).filter(p => p.latitude && p.longitude);
+
+    res.json(mapped);
+  } catch (err) {
+    console.error('Error in GET /api/projects/map:', err.message);
     res.status(500).json({ error: err.message });
   }
 });

@@ -11,7 +11,9 @@
       "status": "Completed",
       "recommendedAmount": 1500000,
       "sanctionedAmount": 1500000,
-      "completedAmount": 1500000
+      "completedAmount": 1500000,
+      "latitude": 18.3582,
+      "longitude": 73.7431
     },
     {
       "workId": "MP620/2024-25/002",
@@ -24,7 +26,9 @@
       "status": "Ongoing",
       "recommendedAmount": 3000000,
       "sanctionedAmount": 2800000,
-      "completedAmount": 1200000
+      "completedAmount": 1200000,
+      "latitude": 18.5987,
+      "longitude": 73.7661
     },
     {
       "workId": "MP620/2024-25/003",
@@ -37,7 +41,9 @@
       "status": "Completed",
       "recommendedAmount": 800000,
       "sanctionedAmount": 800000,
-      "completedAmount": 800000
+      "completedAmount": 800000,
+      "latitude": 18.5089,
+      "longitude": 73.9259
     },
     {
       "workId": "MP620/2024-25/004",
@@ -50,7 +56,9 @@
       "status": "Completed",
       "recommendedAmount": 600000,
       "sanctionedAmount": 600000,
-      "completedAmount": 600000
+      "completedAmount": 600000,
+      "latitude": 19.9975,
+      "longitude": 73.7898
     },
     {
       "workId": "MP620/2024-25/005",
@@ -63,7 +71,9 @@
       "status": "Work partially Completed",
       "recommendedAmount": 2500000,
       "sanctionedAmount": 2500000,
-      "completedAmount": 1000000
+      "completedAmount": 1000000,
+      "latitude": 19.9975,
+      "longitude": 73.7898
     },
     {
       "workId": "MP620/2024-25/006",
@@ -76,7 +86,9 @@
       "status": "Sanctioned",
       "recommendedAmount": 5000000,
       "sanctionedAmount": 4800000,
-      "completedAmount": 0
+      "completedAmount": 0,
+      "latitude": 19.0948,
+      "longitude": 74.748
     },
     {
       "workId": "MP620/2024-25/007",
@@ -89,7 +101,9 @@
       "status": "Completed",
       "recommendedAmount": 1200000,
       "sanctionedAmount": 1200000,
-      "completedAmount": 1200000
+      "completedAmount": 1200000,
+      "latitude": 15.4589,
+      "longitude": 75.0078
     },
     {
       "workId": "MP620/2024-25/008",
@@ -102,7 +116,9 @@
       "status": "Ongoing",
       "recommendedAmount": 3500000,
       "sanctionedAmount": 3500000,
-      "completedAmount": 2000000
+      "completedAmount": 2000000,
+      "latitude": 15.4589,
+      "longitude": 75.0078
     },
     {
       "workId": "MP620/2024-25/009",
@@ -115,7 +131,9 @@
       "status": "Completed",
       "recommendedAmount": 900000,
       "sanctionedAmount": 900000,
-      "completedAmount": 900000
+      "completedAmount": 900000,
+      "latitude": 15.3647,
+      "longitude": 75.124
     },
     {
       "workId": "MP620/2024-25/010",
@@ -128,7 +146,9 @@
       "status": "Completed",
       "recommendedAmount": 2000000,
       "sanctionedAmount": 2000000,
-      "completedAmount": 2000000
+      "completedAmount": 2000000,
+      "latitude": 12.2958,
+      "longitude": 76.6394
     },
     {
       "workId": "MP620/2024-25/011",
@@ -141,7 +161,9 @@
       "status": "Completed",
       "recommendedAmount": 7000000,
       "sanctionedAmount": 7000000,
-      "completedAmount": 7000000
+      "completedAmount": 7000000,
+      "latitude": 25.5941,
+      "longitude": 85.1376
     },
     {
       "workId": "MP620/2024-25/012",
@@ -154,7 +176,9 @@
       "status": "Ongoing",
       "recommendedAmount": 1800000,
       "sanctionedAmount": 1800000,
-      "completedAmount": 600000
+      "completedAmount": 600000,
+      "latitude": 26.1209,
+      "longitude": 85.3647
     },
     {
       "workId": "MP620/2024-25/013",
@@ -167,7 +191,9 @@
       "status": "Completed",
       "recommendedAmount": 1500000,
       "sanctionedAmount": 1500000,
-      "completedAmount": 1500000
+      "completedAmount": 1500000,
+      "latitude": 25.5647,
+      "longitude": 84.6608
     },
     {
       "workId": "MP620/2024-25/014",
@@ -180,7 +206,9 @@
       "status": "Sanctioned",
       "recommendedAmount": 1000000,
       "sanctionedAmount": 1000000,
-      "completedAmount": 0
+      "completedAmount": 0,
+      "latitude": 24.9535,
+      "longitude": 84.0149
     },
     {
       "workId": "MP620/2024-25/015",
@@ -193,7 +221,9 @@
       "status": "Completed",
       "recommendedAmount": 10000000,
       "sanctionedAmount": 10000000,
-      "completedAmount": 10000000
+      "completedAmount": 10000000,
+      "latitude": 26.8467,
+      "longitude": 80.9462
     },
     {
       "workId": "MP620/2024-25/016",
@@ -206,7 +236,9 @@
       "status": "Ongoing",
       "recommendedAmount": 3000000,
       "sanctionedAmount": 2800000,
-      "completedAmount": 900000
+      "completedAmount": 900000,
+      "latitude": 26.4499,
+      "longitude": 80.3319
     },
     {
       "workId": "MP620/2024-25/017",
@@ -219,7 +251,9 @@
       "status": "Completed",
       "recommendedAmount": 5000000,
       "sanctionedAmount": 5000000,
-      "completedAmount": 5000000
+      "completedAmount": 5000000,
+      "latitude": 25.3176,
+      "longitude": 82.9739
     },
     {
       "workId": "MP620/2024-25/018",
@@ -232,7 +266,9 @@
       "status": "Work partially Completed",
       "recommendedAmount": 4500000,
       "sanctionedAmount": 4500000,
-      "completedAmount": 2000000
+      "completedAmount": 2000000,
+      "latitude": 27.1767,
+      "longitude": 78.0081
     },
     {
       "workId": "MP620/2024-25/019",
@@ -245,7 +281,9 @@
       "status": "Completed",
       "recommendedAmount": 1200000,
       "sanctionedAmount": 1200000,
-      "completedAmount": 1200000
+      "completedAmount": 1200000,
+      "latitude": 17.3297,
+      "longitude": 76.8343
     },
     {
       "workId": "MP620/2024-25/020",
@@ -258,7 +296,9 @@
       "status": "Recommended",
       "recommendedAmount": 700000,
       "sanctionedAmount": 0,
-      "completedAmount": 0
+      "completedAmount": 0,
+      "latitude": 16.212,
+      "longitude": 77.3439
     },
     {
       "workId": "MP620/2024-25/021",
@@ -271,7 +311,9 @@
       "status": "Ongoing",
       "recommendedAmount": 15000000,
       "sanctionedAmount": 14000000,
-      "completedAmount": 5000000
+      "completedAmount": 5000000,
+      "latitude": 25.4484,
+      "longitude": 78.5685
     },
     {
       "workId": "MP620/2024-25/022",
@@ -284,7 +326,9 @@
       "status": "Completed",
       "recommendedAmount": 2500000,
       "sanctionedAmount": 2500000,
-      "completedAmount": 2500000
+      "completedAmount": 2500000,
+      "latitude": 27.567,
+      "longitude": 80.683
     },
     {
       "workId": "MP620/2024-25/023",
@@ -297,7 +341,9 @@
       "status": "Completed",
       "recommendedAmount": 1400000,
       "sanctionedAmount": 1400000,
-      "completedAmount": 1400000
+      "completedAmount": 1400000,
+      "latitude": 19.8135,
+      "longitude": 85.8312
     },
     {
       "workId": "MP620/2024-25/024",
@@ -310,7 +356,9 @@
       "status": "Ongoing",
       "recommendedAmount": 8000000,
       "sanctionedAmount": 8000000,
-      "completedAmount": 3500000
+      "completedAmount": 3500000,
+      "latitude": 20.5014,
+      "longitude": 86.4229
     },
     {
       "workId": "MP620/2024-25/025",
@@ -323,7 +371,9 @@
       "status": "Completed",
       "recommendedAmount": 3200000,
       "sanctionedAmount": 3200000,
-      "completedAmount": 3200000
+      "completedAmount": 3200000,
+      "latitude": 20.1824,
+      "longitude": 85.6186
     },
     {
       "workId": "MP620/2024-25/026",
@@ -336,7 +386,9 @@
       "status": "Completed",
       "recommendedAmount": 2800000,
       "sanctionedAmount": 2800000,
-      "completedAmount": 2800000
+      "completedAmount": 2800000,
+      "latitude": 11.0168,
+      "longitude": 76.9558
     },
     {
       "workId": "MP620/2024-25/027",
@@ -349,7 +401,9 @@
       "status": "Work partially Completed",
       "recommendedAmount": 6000000,
       "sanctionedAmount": 6000000,
-      "completedAmount": 3000000
+      "completedAmount": 3000000,
+      "latitude": 10.787,
+      "longitude": 79.1378
     },
     {
       "workId": "MP620/2024-25/028",
@@ -362,11 +416,13 @@
       "status": "Completed",
       "recommendedAmount": 1600000,
       "sanctionedAmount": 1600000,
-      "completedAmount": 1600000
+      "completedAmount": 1600000,
+      "latitude": 9.3639,
+      "longitude": 78.8395
     },
     {
       "workId": "MP620/2024-25/029",
-      "title": "Road widening project Chennai–Tambaram corridor",
+      "title": "Road widening project Chennai\u2013Tambaram corridor",
       "category": "Roads",
       "state": "Tamil Nadu",
       "district": "Kanchipuram",
@@ -375,7 +431,9 @@
       "status": "Ongoing",
       "recommendedAmount": 12000000,
       "sanctionedAmount": 11000000,
-      "completedAmount": 4000000
+      "completedAmount": 4000000,
+      "latitude": 12.8342,
+      "longitude": 79.7036
     },
     {
       "workId": "MP620/2024-25/030",
@@ -388,7 +446,9 @@
       "status": "Completed",
       "recommendedAmount": 1800000,
       "sanctionedAmount": 1800000,
-      "completedAmount": 1800000
+      "completedAmount": 1800000,
+      "latitude": 18.0474,
+      "longitude": 78.2627
     },
     {
       "workId": "MP620/2024-25/031",
@@ -401,7 +461,9 @@
       "status": "Sanctioned",
       "recommendedAmount": 4000000,
       "sanctionedAmount": 4000000,
-      "completedAmount": 0
+      "completedAmount": 0,
+      "latitude": 18.6725,
+      "longitude": 78.0941
     },
     {
       "workId": "MP620/2024-25/032",
@@ -414,7 +476,9 @@
       "status": "Completed",
       "recommendedAmount": 2200000,
       "sanctionedAmount": 2200000,
-      "completedAmount": 2200000
+      "completedAmount": 2200000,
+      "latitude": 17.9689,
+      "longitude": 79.5941
     },
     {
       "workId": "MP620/2024-25/033",
@@ -427,7 +491,9 @@
       "status": "Completed",
       "recommendedAmount": 3800000,
       "sanctionedAmount": 3800000,
-      "completedAmount": 3800000
+      "completedAmount": 3800000,
+      "latitude": 29.596,
+      "longitude": 79.6591
     },
     {
       "workId": "MP620/2024-25/034",
@@ -440,7 +506,9 @@
       "status": "Work partially Completed",
       "recommendedAmount": 2000000,
       "sanctionedAmount": 2000000,
-      "completedAmount": 800000
+      "completedAmount": 800000,
+      "latitude": 30.15,
+      "longitude": 78.78
     },
     {
       "workId": "MP620/2024-25/035",
@@ -453,7 +521,9 @@
       "status": "Completed",
       "recommendedAmount": 1200000,
       "sanctionedAmount": 1200000,
-      "completedAmount": 1200000
+      "completedAmount": 1200000,
+      "latitude": 30.3165,
+      "longitude": 78.0322
     },
     {
       "workId": "MP620/2024-25/036",
@@ -466,7 +536,9 @@
       "status": "Completed",
       "recommendedAmount": 9000000,
       "sanctionedAmount": 9000000,
-      "completedAmount": 9000000
+      "completedAmount": 9000000,
+      "latitude": 26.7509,
+      "longitude": 94.2037
     },
     {
       "workId": "MP620/2024-25/037",
@@ -479,7 +551,9 @@
       "status": "Ongoing",
       "recommendedAmount": 3500000,
       "sanctionedAmount": 3500000,
-      "completedAmount": 1800000
+      "completedAmount": 1800000,
+      "latitude": 26.1445,
+      "longitude": 91.7362
     },
     {
       "workId": "MP620/2024-25/038",
@@ -492,7 +566,9 @@
       "status": "Completed",
       "recommendedAmount": 4500000,
       "sanctionedAmount": 4500000,
-      "completedAmount": 4500000
+      "completedAmount": 4500000,
+      "latitude": 25.2678,
+      "longitude": 94.02
     },
     {
       "workId": "MP620/2024-25/039",
@@ -505,7 +581,9 @@
       "status": "Completed",
       "recommendedAmount": 2800000,
       "sanctionedAmount": 2800000,
-      "completedAmount": 2800000
+      "completedAmount": 2800000,
+      "latitude": 23.8438,
+      "longitude": 91.9048
     },
     {
       "workId": "MP620/2024-25/040",
@@ -518,7 +596,9 @@
       "status": "Completed",
       "recommendedAmount": 1500000,
       "sanctionedAmount": 1500000,
-      "completedAmount": 1500000
+      "completedAmount": 1500000,
+      "latitude": 25.5788,
+      "longitude": 91.8933
     },
     {
       "workId": "MP620/2024-25/041",
@@ -531,11 +611,13 @@
       "status": "Completed",
       "recommendedAmount": 3000000,
       "sanctionedAmount": 3000000,
-      "completedAmount": 3000000
+      "completedAmount": 3000000,
+      "latitude": 34.0837,
+      "longitude": 74.7973
     },
     {
       "workId": "MP620/2024-25/042",
-      "title": "Road construction Leh–Nubra village connectivity",
+      "title": "Road construction Leh\u2013Nubra village connectivity",
       "category": "Roads",
       "state": "Ladakh",
       "district": "Leh",
@@ -544,7 +626,9 @@
       "status": "Ongoing",
       "recommendedAmount": 20000000,
       "sanctionedAmount": 18000000,
-      "completedAmount": 7000000
+      "completedAmount": 7000000,
+      "latitude": 34.1526,
+      "longitude": 77.5771
     },
     {
       "workId": "MP620/2024-25/043",
@@ -557,7 +641,9 @@
       "status": "Completed",
       "recommendedAmount": 2500000,
       "sanctionedAmount": 2500000,
-      "completedAmount": 2500000
+      "completedAmount": 2500000,
+      "latitude": 31.1048,
+      "longitude": 77.1734
     },
     {
       "workId": "MP620/2024-25/044",
@@ -570,7 +656,9 @@
       "status": "Sanctioned",
       "recommendedAmount": 5000000,
       "sanctionedAmount": 5000000,
-      "completedAmount": 0
+      "completedAmount": 0,
+      "latitude": 31.9579,
+      "longitude": 77.1095
     },
     {
       "workId": "MP620/2024-25/045",
@@ -583,7 +671,9 @@
       "status": "Completed",
       "recommendedAmount": 1800000,
       "sanctionedAmount": 1800000,
-      "completedAmount": 1800000
+      "completedAmount": 1800000,
+      "latitude": 30.7046,
+      "longitude": 76.7179
     },
     {
       "workId": "MP620/2024-25/046",
@@ -596,7 +686,9 @@
       "status": "Completed",
       "recommendedAmount": 7500000,
       "sanctionedAmount": 7500000,
-      "completedAmount": 7500000
+      "completedAmount": 7500000,
+      "latitude": 30.901,
+      "longitude": 75.8573
     },
     {
       "workId": "MP620/2024-25/047",
@@ -609,7 +701,9 @@
       "status": "Ongoing",
       "recommendedAmount": 2000000,
       "sanctionedAmount": 2000000,
-      "completedAmount": 600000
+      "completedAmount": 600000,
+      "latitude": 29.1492,
+      "longitude": 75.7217
     },
     {
       "workId": "MP620/2024-25/048",
@@ -622,7 +716,9 @@
       "status": "Work partially Completed",
       "recommendedAmount": 3500000,
       "sanctionedAmount": 3500000,
-      "completedAmount": 1500000
+      "completedAmount": 1500000,
+      "latitude": 29.9457,
+      "longitude": 78.1642
     },
     {
       "workId": "MP620/2024-25/049",
@@ -635,7 +731,9 @@
       "status": "Completed",
       "recommendedAmount": 1200000,
       "sanctionedAmount": 1200000,
-      "completedAmount": 1200000
+      "completedAmount": 1200000,
+      "latitude": 26.4499,
+      "longitude": 74.6399
     },
     {
       "workId": "MP620/2024-25/050",
@@ -648,7 +746,69 @@
       "status": "Completed",
       "recommendedAmount": 4000000,
       "sanctionedAmount": 4000000,
-      "completedAmount": 4000000
+      "completedAmount": 4000000,
+      "latitude": 28.0229,
+      "longitude": 73.3119
+    },
+    {
+      "workId": "MP620/PUNE/2024-01",
+      "title": "Construction of Primary Health & Diagnostic Center in Kothrud",
+      "category": "Health",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "constituency": "Pune",
+      "mpName": "Murlidhar Mohol",
+      "status": "Ongoing",
+      "recommendedAmount": 4500000,
+      "sanctionedAmount": 4200000,
+      "completedAmount": 2100000,
+      "latitude": 18.5074,
+      "longitude": 73.8077
+    },
+    {
+      "workId": "MP620/PUNE/2024-02",
+      "title": "Modern Digital e-Library and Youth Study Hall at Shivajinagar",
+      "category": "Education",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "constituency": "Pune",
+      "mpName": "Murlidhar Mohol",
+      "status": "Completed",
+      "recommendedAmount": 2500000,
+      "sanctionedAmount": 2500000,
+      "completedAmount": 2500000,
+      "latitude": 18.5314,
+      "longitude": 73.8446
+    },
+    {
+      "workId": "MP620/PUNE/2024-03",
+      "title": "Drinking Water Pipeline & RO Filtration Plant in Pimpri-Chinchwad",
+      "category": "Water",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "constituency": "Maval",
+      "mpName": "Shrirang Barne",
+      "status": "Ongoing",
+      "recommendedAmount": 5000000,
+      "sanctionedAmount": 4800000,
+      "completedAmount": 2900000,
+      "latitude": 18.6279,
+      "longitude": 73.8131
+    },
+    {
+      "workId": "MP620/PUNE/2024-04",
+      "title": "Solid Waste Management & Biogas Processing Facility, Baramati",
+      "category": "Sanitation",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "constituency": "Baramati",
+      "mpName": "Supriya Sule",
+      "status": "Sanctioned",
+      "recommendedAmount": 3800000,
+      "sanctionedAmount": 3800000,
+      "completedAmount": 0,
+      "latitude": 18.1517,
+      "longitude": 74.5777
     }
   ],
   "complaints": [
@@ -696,6 +856,24 @@
       "category": "Delay",
       "description": "Canal desilting work incomplete before monsoon. Fields are flooding.",
       "status": "Under Review"
+    }
+  ],
+  "users": [
+    {
+      "name": "District Authority Pune",
+      "email": "pune.authority@mplads.gov.in",
+      "password": "pune123",
+      "role": "authority",
+      "district": "Pune",
+      "phone": "+91 20 2612 3456"
+    },
+    {
+      "name": "Rahul Sharma",
+      "email": "citizen@example.com",
+      "password": "citizen123",
+      "role": "citizen",
+      "district": "Pune",
+      "phone": "+91 98765 43210"
     }
   ]
 }

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Risk & District Authority Portal (Pune) – MPLADS Monitor</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .authority-header {
+      background: linear-gradient(135deg, #0f3060 0%, #1a4b8c 100%);
+      color: white;
+      padding: 32px 0 28px;
+      margin-bottom: 28px;
+    }
+    .badge-pune {
+      background: #f59e0b;
+      color: #78350f;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .badge-sih {
+      background: #0ea5e9;
+      color: #ffffff;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .table-container {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--border, #dce1e7);
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+    .table-container thead th {
+      color: #334155 !important;
+      font-weight: 700;
+      font-size: 0.82rem;
+      background: #f8fafc;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 12px 14px;
+    }
+    .status-action-btn {
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      line-height: 1.3;
+    }
+    .btn-review {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+    .btn-review:hover {
+      background: #fde68a;
+      border-color: #f59e0b;
+      box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+    }
+    .btn-resolve {
+      background: #16a34a;
+      color: #ffffff;
+      border-color: #15803d;
+    }
+    .btn-resolve:hover {
+      background: #15803d;
+      box-shadow: 0 2px 4px rgba(22, 163, 74, 0.25);
+    }
+    .btn-reject {
+      background: #ffffff;
+      color: #dc2626;
+      border-color: #fca5a5;
+    }
+    .btn-reject:hover {
+      background: #fee2e2;
+      border-color: #ef4444;
+      box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+    }
+    .btn-map {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+    .btn-map:hover {
+      background: #dbeafe;
+      border-color: #93c5fd;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-card {
+      background: white;
+      border-radius: 8px;
+      max-width: 620px;
+      width: 90%;
+      padding: 24px 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .risk-pill-high {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      display: inline-block;
+    }
+    .risk-pill-med {
+      background: #fef3c7;
+      color: #b45309;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      display: inline-block;
+    }
+    .risk-pill-low {
+      background: #dcfce7;
+      color: #15803d;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-brand">
+      MPLADS Monitor
+      <span class="gov-badge">GOV</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="authority.html" class="active">Authority Portal</a></li>
+      <li><a href="ai-analytics.html">AI Risk Monitor</a></li>
+      <li><a href="map.html">GIS Map</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="dashboard.html">National Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Authority Banner (AI Risk Main Focus - SIH PS 26102) ── -->
+  <section class="authority-header">
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+            <span class="badge-pune">District Authority</span>
+            <span class="badge-sih">MoSPI SIH PS ID 26102</span>
+            <span style="font-size:0.85rem; opacity:0.85;">Pune Administrative Jurisdiction</span>
+          </div>
+          <h1 style="font-size:1.85rem; margin:0; font-weight:800;">
+            AI Risk &amp; Anomaly Detection Portal
+          </h1>
+          <p style="margin-top:6px; opacity:0.9; font-size:0.92rem; max-width:780px;">
+            AI-powered intelligence system for detecting anomalies, fraud, duplicate works, and expenditure inefficiencies in MPLADS works, combined with official citizen grievance resolution across Pune.
+          </p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="btn-trigger-ai" onclick="runAiInspection()" class="btn" style="background:#ef4444; color:#ffffff; font-weight:700;">
+            Run AI Risk Scan
+          </button>
+          <a href="map.html" class="btn" style="background:#f59e0b; color:#78350f; font-weight:700;">
+            Open Pune GIS Map
+          </a>
+          <button onclick="openNewProjectModal()" class="btn" style="background:#ffffff; color:#0f3060; font-weight:700;">
+            + Add New Work
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Authority Main Container ────────────────────────── -->
+  <main class="container">
+
+    <!-- Access Notice / Authentication check -->
+    <div id="auth-guard-alert" class="alert alert-info" style="display:none; margin-bottom:20px;"></div>
+
+    <!-- AI Scan Progress Alert -->
+    <div id="ai-scan-banner" class="alert alert-info" style="display:none; margin-bottom:20px;"></div>
+
+    <!-- ── KPI Stats for District Authority (5 Cards in 1 Row) ── -->
+    <div class="kpi-grid-5" style="margin-bottom:30px;">
+      <div class="kpi-card red">
+        <div class="kpi-number" id="stat-ai-high" style="color:var(--danger);">—</div>
+        <div class="kpi-label">High Risk Alerts</div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-number" id="stat-ai-medium" style="color:var(--warning);">—</div>
+        <div class="kpi-label">Medium Risk Alerts</div>
+      </div>
+      <div class="kpi-card info">
+        <div class="kpi-number" id="stat-ai-total">—</div>
+        <div class="kpi-label">AI Issues Detected</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-number" id="pune-stat-total">0</div>
+        <div class="kpi-label">Pune Works Monitored</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-number" id="pune-stat-complaints">0</div>
+        <div class="kpi-label">Citizen Grievances</div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 1 (MAIN FOCUS): AI Anomaly & Fraud Detection Engine ── -->
+    <section style="margin-bottom:44px; background:white; padding:24px; border-radius:10px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h2 style="font-size:1.4rem; color:var(--primary, #1a4b8c); margin:0;">
+              AI Anomaly &amp; Fraud Risk Monitor
+            </h2>
+            <span class="badge-sih">SIH PS 26102</span>
+          </div>
+          <p style="font-size:0.88rem; color:var(--text-light, #7f8c8d); margin-top:4px;">
+            Algorithmic detection of cost overruns, duplicate works, zero utilization delays, and sanction deviations.
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span id="ai-count-pill" style="background:#e0f2fe; color:#0369a1; padding:4px 10px; border-radius:20px; font-size:0.8rem; font-weight:700;">
+            Scanning records...
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick AI Filters -->
+      <div class="filter-bar" style="margin-bottom:16px;">
+        <div style="flex:2; min-width:180px;">
+          <label>Search Anomaly / Work</label>
+          <input type="text" id="ai-filter-search" placeholder="Filter by work ID, title, or category..." oninput="filterAiAnomalies()" />
+        </div>
+        <div style="flex:1; min-width:140px;">
+          <label>Risk Level</label>
+          <select id="ai-filter-risk" onchange="filterAiAnomalies()">
+            <option value="">All Risk Levels</option>
+            <option value="HIGH">High Risk Only</option>
+            <option value="MEDIUM">Medium Risk</option>
+            <option value="LOW">Low Risk</option>
+          </select>
+        </div>
+        <div style="flex:1; min-width:180px;">
+          <label>Anomaly Type</label>
+          <select id="ai-filter-type" onchange="filterAiAnomalies()">
+            <option value="">All Anomaly Types</option>
+            <option value="Duplicate">Potential Duplicate Work</option>
+            <option value="Stalled">Stalled / Zero Utilization</option>
+            <option value="Partial">Partial Completion Inefficiency</option>
+            <option value="Curtailment">Sanction Curtailment</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:8px; align-items:flex-end;">
+          <button class="btn btn-outline" style="border-color:#94a3b8; color:#475569;" onclick="resetAiFilters()">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+          <thead>
+            <tr style="background:#f8fafc; border-bottom:1px solid var(--border, #dce1e7); text-align:left;">
+              <th style="padding:10px 14px;">Work ID</th>
+              <th style="padding:10px 14px;">Project Title &amp; Constituency</th>
+              <th style="padding:10px 14px;">Anomaly Category</th>
+              <th style="padding:10px 14px;">Risk Level</th>
+              <th style="padding:10px 14px;">Algorithmic Finding &amp; Evidence</th>
+              <th style="padding:10px 14px; text-align:center;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="ai-anomalies-table-body">
+            <tr>
+              <td colspan="6" style="text-align:center; padding:30px; color:#64748b;">
+                Loading AI anomaly detection feed...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── SECTION 2: Citizen Grievance Resolution ────────── -->
+    <section style="margin-bottom:44px; background:white; padding:24px; border-radius:10px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+        <div>
+          <h2 style="font-size:1.35rem; color:var(--primary, #1a4b8c); margin:0;">
+            Citizen Grievances &amp; Resolution (Pune Jurisdiction)
+          </h2>
+          <p style="font-size:0.85rem; color:var(--text-light, #7f8c8d); margin-top:2px;">
+            District Authority review: Investigate citizen complaints, verify on-site execution, and update ticket resolution status in database.
+          </p>
+        </div>
+        <span id="complaints-count-badge" class="badge-pune" style="background:#e0f2fe; color:#0369a1;">
+          Loading complaints...
+        </span>
+      </div>
+
+      <div class="table-container">
+        <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+          <thead>
+            <tr style="background:#f8fafc; border-bottom:1px solid var(--border, #dce1e7); text-align:left;">
+              <th style="padding:10px 14px;">Ticket ID</th>
+              <th style="padding:10px 14px;">Complainant</th>
+              <th style="padding:10px 14px;">Category</th>
+              <th style="padding:10px 14px;">Description</th>
+              <th style="padding:10px 14px;">Status</th>
+              <th style="padding:10px 14px; text-align:right;">Authority Actions</th>
+            </tr>
+          </thead>
+          <tbody id="complaints-table-body">
+            <tr>
+              <td colspan="6" style="text-align:center; padding:30px; color:#64748b;">
+                Loading complaints...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── SECTION 3: Pune District Works Inventory ───────── -->
+    <section style="margin-bottom:50px; background:white; padding:24px; border-radius:10px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+        <div>
+          <h2 style="font-size:1.35rem; color:var(--primary, #1a4b8c); margin:0;">
+            Pune District Works Inventory
+          </h2>
+          <p style="font-size:0.85rem; color:var(--text-light, #7f8c8d); margin-top:2px;">
+            Official records for works across Baramati, Pune City, Shirur, and Maval constituencies.
+          </p>
+        </div>
+        <button onclick="openNewProjectModal()" class="btn btn-outline" style="font-size:0.85rem; padding:6px 14px;">
+          + Add Work
+        </button>
+      </div>
+
+      <div class="table-container">
+        <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+          <thead>
+            <tr style="background:#f8fafc; border-bottom:1px solid var(--border, #dce1e7); text-align:left;">
+              <th style="padding:10px 14px;">Work ID</th>
+              <th style="padding:10px 14px;">Title</th>
+              <th style="padding:10px 14px;">Category</th>
+              <th style="padding:10px 14px;">Constituency / MP</th>
+              <th style="padding:10px 14px;">Budget (Rs)</th>
+              <th style="padding:10px 14px;">Status</th>
+              <th style="padding:10px 14px; text-align:center;">GIS Map</th>
+            </tr>
+          </thead>
+          <tbody id="pune-projects-table-body">
+            <tr>
+              <td colspan="7" style="text-align:center; padding:30px; color:#64748b;">
+                Loading Pune works...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Modal: Add New Project (Authority Action) ───────── -->
+  <div class="modal-overlay" id="new-project-modal" onclick="closeModalOnBg(event)">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+        <h3 style="margin:0; color:var(--primary, #1a4b8c); font-size:1.25rem;">Add New MPLADS Project (Pune)</h3>
+        <button onclick="closeNewProjectModal()" style="background:none; border:none; font-size:1.3rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <form id="add-project-form" onsubmit="submitNewProject(event)">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label for="proj-workId">Work ID *</label>
+          <input type="text" id="proj-workId" placeholder="e.g. MP620/PUNE/2024-08" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label for="proj-title">Project Title *</label>
+          <input type="text" id="proj-title" placeholder="e.g. Construction of Concrete Road in Bavdhan" required />
+        </div>
+
+        <div class="form-row" style="margin-bottom:14px;">
+          <div class="form-group">
+            <label for="proj-category">Category *</label>
+            <select id="proj-category" required>
+              <option value="Roads">Roads &amp; Bridges</option>
+              <option value="Buildings">Buildings &amp; Community Halls</option>
+              <option value="Health">Health &amp; Medical</option>
+              <option value="Education">Education &amp; Libraries</option>
+              <option value="Water">Drinking Water Supply</option>
+              <option value="Sanitation">Sanitation &amp; Drainage</option>
+              <option value="Energy">Energy &amp; Solar Lights</option>
+              <option value="Infrastructure">Other Infrastructure</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="proj-status">Status *</label>
+            <select id="proj-status" required>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Sanctioned">Sanctioned</option>
+              <option value="Completed">Completed</option>
+              <option value="Recommended">Recommended</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom:14px;">
+          <div class="form-group">
+            <label for="proj-constituency">Constituency (Pune)</label>
+            <select id="proj-constituency" onchange="autoFillMp(this.value)">
+              <option value="Pune">Pune City</option>
+              <option value="Baramati">Baramati</option>
+              <option value="Maval">Maval / Pimpri</option>
+              <option value="Shirur">Shirur</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="proj-mp">Member of Parliament</label>
+            <input type="text" id="proj-mp" value="Murlidhar Mohol" />
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom:14px;">
+          <div class="form-group">
+            <label for="proj-sanctioned">Sanctioned Budget (Rs) *</label>
+            <input type="number" id="proj-sanctioned" placeholder="e.g. 2500000" min="0" required />
+          </div>
+          <div class="form-group">
+            <label for="proj-completed">Completed / Spent (Rs)</label>
+            <input type="number" id="proj-completed" placeholder="e.g. 1000000" min="0" value="0" />
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom:18px;">
+          <div class="form-group">
+            <label for="proj-lat">Latitude (Map)</label>
+            <input type="number" step="0.0001" id="proj-lat" value="18.5204" />
+          </div>
+          <div class="form-group">
+            <label for="proj-lng">Longitude (Map)</label>
+            <input type="number" step="0.0001" id="proj-lng" value="73.8567" />
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" onclick="closeNewProjectModal()" class="btn btn-outline">Cancel</button>
+          <button type="submit" id="btn-save-project" class="btn btn-primary">Create Work</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom">
+      <p>&copy; 2024 MPLADS Monitor | District Authority Module (Pune) | MoSPI SIH PS ID 26102</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/authority.js"></script>
+</body>
+</html>

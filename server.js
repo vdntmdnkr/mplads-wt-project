@@ -27,11 +27,13 @@ const projectRoutes   = require('./routes/projects');
 const dashboardRoutes = require('./routes/dashboard');
 const complaintRoutes = require('./routes/complaints');
 const aiRoutes        = require('./routes/ai');
+const authRoutes      = require('./routes/auth');
 
 app.use('/api/projects',   projectRoutes);
 app.use('/api/dashboard',  dashboardRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/ai',         aiRoutes);
+app.use('/api/auth',       authRoutes);
 
 // ── 4. Health Check Route ─────────────────────────────────────
 app.get('/api/health', (req, res) => {

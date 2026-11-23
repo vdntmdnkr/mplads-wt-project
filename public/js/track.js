@@ -51,7 +51,7 @@ async function trackComplaint() {
 
     // Populate the result table using DOM manipulation
     document.getElementById('res-ticketId').textContent    = complaint.ticketId;
-    document.getElementById('res-name').textContent        = complaint.name;
+    document.getElementById('res-name').textContent        = 'Anonymous Citizen (Protected)';
     document.getElementById('res-category').textContent    = complaint.category;
     document.getElementById('res-project').textContent     = complaint.projectId || 'Not specified';
     document.getElementById('res-description').textContent = complaint.description;
