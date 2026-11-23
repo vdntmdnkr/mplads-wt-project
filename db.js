@@ -721,29 +721,37 @@ const SqliteUser = {
 };
 
 // ── Smart Dynamic Proxy (Mongo -> SQLite -> JSON) ─────────────
-const ProjectProxy = new Proxy({}, {
-  get: (target, prop) => {
-    if (isUsingMongo) return MongoProject[prop];
-    if (isUsingSqlite && sqliteDb) return SqliteProject[prop];
-    return JsonProject[prop];
-  }
-});
+function createDynamicProxy(getMongoModel, getSqliteModel, getJsonModel) {
+  return new Proxy(function () {}, {
+    get: (target, prop) => {
+      let active;
+      if (isUsingMongo) active = getMongoModel();
+      else if (isUsingSqlite && sqliteDb) active = getSqliteModel();
+      else active = getJsonModel();
 
-const ComplaintProxy = new Proxy({}, {
-  get: (target, prop) => {
-    if (isUsingMongo) return MongoComplaint[prop];
-    if (isUsingSqlite && sqliteDb) return SqliteComplaint[prop];
-    return JsonComplaint[prop];
-  }
-});
+      const val = active[prop];
+      if (typeof val === 'function') {
+        return val.bind(active);
+      }
+      return val;
+    },
+    construct: (target, args) => {
+      let active;
+      if (isUsingMongo) active = getMongoModel();
+      else if (isUsingSqlite && sqliteDb) active = getSqliteModel();
+      else active = getJsonModel();
 
-const UserProxy = new Proxy({}, {
-  get: (target, prop) => {
-    if (isUsingMongo) return MongoUser[prop];
-    if (isUsingSqlite && sqliteDb) return SqliteUser[prop];
-    return JsonUser[prop];
-  }
-});
+      if (typeof active === 'function') {
+        return new active(...args);
+      }
+      return active;
+    }
+  });
+}
+
+const ProjectProxy = createDynamicProxy(() => MongoProject, () => SqliteProject, () => JsonProject);
+const ComplaintProxy = createDynamicProxy(() => MongoComplaint, () => SqliteComplaint, () => JsonComplaint);
+const UserProxy = createDynamicProxy(() => MongoUser, () => SqliteUser, () => JsonUser);
 
 module.exports = {
   connectDB,
