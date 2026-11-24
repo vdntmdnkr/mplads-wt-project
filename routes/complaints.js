@@ -107,11 +107,12 @@ router.post('/', async (req, res) => {
   }
 });
 
-// ── PUT /api/complaints/:ticketId/status ──────────────────────
+// ── PUT / PATCH /api/complaints/:ticketId/status ──────────────
 // Update complaint status (District Authority action)
-router.put('/:ticketId/status', async (req, res) => {
+const handleUpdateStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    let { status } = req.body;
+    if (status === 'Under Investigation') status = 'Under Review';
     const validStatuses = ['Submitted', 'Under Review', 'Resolved', 'Rejected'];
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({ 
@@ -129,6 +130,9 @@ router.put('/:ticketId/status', async (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
-});
+};
+
+router.put('/:ticketId/status', handleUpdateStatus);
+router.patch('/:ticketId/status', handleUpdateStatus);
 
 module.exports = router;

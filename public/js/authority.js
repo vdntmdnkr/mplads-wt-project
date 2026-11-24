@@ -323,7 +323,7 @@ function renderComplaintsTable(list) {
         </td>
         <td style="padding:12px 14px; text-align:right; white-space:nowrap;">
           <div style="display:inline-flex; gap:6px; align-items:center;">
-            <button onclick="updateComplaintStatus('${escapeHtml(ticketId)}', 'Under Investigation')" class="status-action-btn btn-review" title="Investigate complaint">
+            <button onclick="updateComplaintStatus('${escapeHtml(ticketId)}', 'Under Review')" class="status-action-btn btn-review" title="Investigate complaint">
               Investigate
             </button>
             <button onclick="updateComplaintStatus('${escapeHtml(ticketId)}', 'Resolved')" class="status-action-btn btn-resolve" title="Mark as resolved">
@@ -348,7 +348,7 @@ async function updateComplaintStatus(ticketId, newStatus) {
 
   try {
     const res = await fetch(`/api/complaints/${encodeURIComponent(ticketId)}/status`, {
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${user.token || ''}`
@@ -360,7 +360,15 @@ async function updateComplaintStatus(ticketId, newStatus) {
       })
     });
 
-    const data = await res.json();
+    let data;
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      throw new Error(`Server returned status ${res.status}: ${text.slice(0, 100)}`);
+    }
+
     if (!res.ok) throw new Error(data.error || 'Failed to update ticket status');
 
     await loadComplaints();
