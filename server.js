@@ -39,7 +39,8 @@ app.use('/api/auth',       authRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    database: isUsingMongo() ? 'MongoDB' : 'SQLite (Local)',
+    version: '1.2.1-fix-proxy',
+    database: isUsingMongo() ? 'MongoDB' : 'Fallback DB',
     timestamp: new Date().toISOString()
   });
 });
